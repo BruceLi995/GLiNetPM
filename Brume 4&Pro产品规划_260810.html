@@ -196,7 +196,7 @@ MSP 多租户</td><td>设备级 AI 洞察；
 <p>共同原则：以核心安全零订阅对抗UCG-Max付费签名；以开箱易用对抗hEX S配置门槛；以免license云+本地屏对抗Fusion运维；以更低价格+同等安全深度硬刚Firewalla。</p>
 <div class="table-wrap"><table>
 <thead><tr><td>功能域</td><td>Brume 4（P0 必做 / P1 应做）</td><td>Brume Pro（P0 必做 / P1 应做）</td></tr></thead>
-<tbody><tr><td>安全底座</td><td>P0 开箱 IDS/IPS；VLAN 原生+简易化配置(支持mDNS/SSDP 中继)；丰富攻击防护功能；</td><td>P0 完整 Suricata 10000+ 规则；Zone-Based 防火墙；RBAC 分级权限；
+<tbody><tr><td>安全底座</td><td>P0 开箱 IDS/IPS；VLAN 原生+简易化配置(支持mDNS/SSDP 中继)；丰富攻击防护功能；MESH管理无线AP后对WiFi终端进行更细化的二层安全配置</td><td>P0 完整 Suricata 10000+ 规则；Zone-Based 防火墙；RBAC 分级权限；
 P1 TLS/HTTPS加密流量检测、VPN隧道流量检测</td></tr><tr><td>可视化</td><td>P0 可视化防火墙(Zone/应用级+L7)；可视化多种日志（威胁日志、流量日志、管理员日志、系统日志等）审计 +日志留存、导出、脱敏、防篡改、发送（加密 Syslog）</td><td>P0 防火墙/IDS 统一策略编辑器；审计中心(留存+报表+合规导出)；安全仪表盘（系统状态、流量看板、威胁中心、ZTNA仪表盘、VLAN、终端、告警，支持一件处置和多维度下钻）</td></tr><tr><td>VPN</td><td>P0 WireGuard+多 VPN+IPsec+混淆</td><td>P0 同左（保持 VPN 强项）</td></tr><tr><td>易用</td><td>P0 App/Web 双管理；GoodCloud 免 license云；新设备自动隔离+一键 Lockdown；工作模式设置引导；预置场景化安全模板，简化配置；蓝牙初始化配置引导</td><td>P0 同左；P1 ZTNA 零信任（考虑集成开源框架（OpenZiti））</td></tr><tr><td>多模式安全</td><td>P0支持桥模式、旁路由模式下的安全防护/审计</td><td>P0 同左</td></tr><tr><td>多站点</td><td>P1 GoodCloud 多租户轻量 SD-WAN</td><td>P1 MSP 多租户；多站点 SD-WAN</td></tr><tr><td>智能</td><td>无</td><td>P1 AI 行为分析（轻量规则引擎起步，后续迭代流量基线AI异常检测再到ML 模型） + 设备级流量洞察 + 安全策略冗余分析 + 可选云端审计：可建立&quot;智能安全网关&quot;的品类认知</td></tr><tr><td>扩展</td><td>无</td><td>P1 Docker；可选 NVMe 生态</td></tr><tr><td>开放</td><td>P1 上游 OpenWrt 支持承诺；去云化本地日志/Headscale</td><td>P1 同上</td></tr><tr><td>客诉</td><td>AdGuard 与 VPN域名分流/家长控制互斥；OpenWrt 版本更新；Tailscale 等功能的版本更新；VPN 等核心配置的换机迁移</td><td>同上</td></tr></tbody>
 </table></div>
 <h2 id="h2-11" class="lvl2">认证与合规需求</h2>
