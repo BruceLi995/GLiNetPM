@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>安全网关竞品应用场景与功能映射分析（四竞品版）</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1f2329; --sub:#5b6270; --line:#e6e8eb;
+  --brand:#2563eb; --th:#eef2ff; --th2:#e0e7ff; --zebra:#fafbff;
+  --shadow:0 1px 3px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.75;font-size:15.5px;}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* top tab bar */
+.topnav{position:sticky;top:0;z-index:25;background:rgba(247,248,250,.9);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(16,24,40,.05)}
+.topnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:14px;
+  padding:0 20px;height:54px}
+.topnav .t{font-weight:800;font-size:14.5px;white-space:nowrap;color:var(--ink)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 auto}
+.tab{position:relative;border:1px solid var(--line);background:var(--panel);color:var(--sub);
+  border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;white-space:nowrap;
+  transition:all .15s ease;font-family:inherit}
+.tab-no{font-weight:700;font-size:14px}
+.tab-tip{position:absolute;top:calc(100% + 9px);left:50%;transform:translateX(-50%);
+  white-space:nowrap;background:var(--ink);color:#fff;padding:7px 11px;border-radius:8px;
+  font-size:12.5px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .15s ease;
+  z-index:40;box-shadow:var(--shadow)}
+.tab-tip::before{content:"";position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
+  border:6px solid transparent;border-bottom-color:var(--ink)}
+.tab:hover .tab-tip{opacity:1}
+.tab:hover{color:var(--ink);border-color:var(--th2)}
+.tab.active{background:var(--brand);color:#fff;border-color:var(--brand);font-weight:600;
+  box-shadow:0 2px 8px rgba(37,99,235,.35)}
+.tab.active .tab-no{color:#fff}
+.crumb{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:13px;color:var(--sub);
+  background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:9px 14px;
+  margin-bottom:18px;box-shadow:var(--shadow)}
+.crumb .root{font-weight:700;color:var(--brand)}
+.crumb .sep{color:var(--sub);opacity:.6;margin:0 2px}
+.crumb .cur{color:var(--ink);font-weight:600}
+.toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--ink);
+  border-radius:30px;padding:7px 13px;font-size:12.5px;cursor:pointer;white-space:nowrap;
+  box-shadow:var(--shadow)}
+
+/* layout */
+.layout{display:flex;align-items:flex-start;max-width:1280px;margin:0 auto;gap:28px;padding:22px 20px 60px}
+.sidebar{position:sticky;top:74px;align-self:flex-start;width:290px;flex:0 0 290px;
+  max-height:calc(100vh - 90px);overflow:auto;padding:18px 8px 30px 0;border-right:1px solid var(--line)}
+.brand{font-weight:800;font-size:14px;color:var(--ink);margin:0 0 4px;letter-spacing:.2px;line-height:1.4}
+.brand small{display:block;font-weight:500;color:var(--sub);font-size:12px;margin-top:5px}
+.chap-label{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--brand);
+  text-transform:uppercase;margin:6px 0 8px;padding-left:10px}
+.toc-list{list-style:none;margin:0;padding:0;font-size:13.5px}
+.toc-list li{margin:1px 0}
+.toc-list a{display:block;padding:5px 10px;border-radius:7px;color:var(--sub);border-left:2px solid transparent}
+.toc-list a:hover{background:var(--zebra);color:var(--ink);text-decoration:none}
+.toc-list a.active{background:var(--th);color:var(--brand);border-left-color:var(--brand);font-weight:600}
+.toc-l1{font-weight:700;color:var(--ink)!important}
+.toc-l2{padding-left:22px!important}
+.toc-l3{padding-left:38px!important;font-size:12.5px}
+.menu-btn{display:none;border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;cursor:pointer}
+.main{flex:1 1 auto;min-width:0}
+.cover{background:linear-gradient(135deg,#1e3a8a,#2563eb 55%,#0ea5e9);
+  color:#fff;border-radius:16px;padding:30px 34px;box-shadow:var(--shadow);margin-bottom:22px}
+.cover h1{margin:0 0 8px;font-size:24px;line-height:1.3}
+.cover p{margin:0;opacity:.9;font-size:13.5px}
+.content{background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  padding:32px 38px;box-shadow:var(--shadow)}
+h1{font-size:23px;margin:0 0 16px;padding-bottom:10px;border-bottom:2px solid var(--th2);color:#13204a}
+h2{font-size:19px;margin:28px 0 12px;color:#1d3a8f;padding-left:11px;border-left:4px solid var(--brand)}
+h3{font-size:16px;margin:20px 0 10px;color:#334155}
+p{margin:10px 0}
+ul{margin:10px 0;padding-left:22px}
+li{margin:5px 0}
+li.num{list-style:decimal}
+strong{color:#13204a}
+.table-wrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;background:#fff}
+thead th{background:linear-gradient(180deg,var(--th),var(--th2));color:#1e2a5e;
+  font-weight:700;text-align:left;padding:10px 12px;border:1px solid #cfd8ff;white-space:nowrap}
+tbody td{padding:9px 12px;border:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even){background:var(--zebra)}
+tbody tr:hover{background:#eef4ff}
+code{background:#eef2ff;color:#0b3b6f;padding:1px 6px;border-radius:5px;font-size:13px;
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+
+/* dark */
+body.dark{--bg:#0f1420;--panel:#171c28;--ink:#e6e9f0;--sub:#9aa3b5;--line:#2a3344;
+  --th:#1d2742;--th2:#243056;--zebra:#1b2230;--shadow:0 1px 3px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
+body.dark a{color:#7cb0ff}
+body.dark strong{color:#fff}
+body.dark .toc-list a:hover{background:var(--zebra);color:#fff}
+body.dark thead th{color:#cdd8ff;border-color:#33406b}
+body.dark tbody td{border-color:var(--line)}
+body.dark tbody tr:hover{background:#1f2942}
+body.dark code{background:#1d2742}
+body.dark .topnav{background:rgba(15,20,32,.9)}
+
+@media(max-width:900px){
+  .layout{display:block;padding:16px}
+  .sidebar{position:static;width:auto;flex:none;max-height:none;border-right:none;
+    border-bottom:1px solid var(--line);padding:14px 16px;display:none}
+  .sidebar.open{display:block}
+  .menu-btn{display:inline-block}
+  .main{padding:0}
+  .content{padding:22px 18px;border-radius:12px}
+  .cover{padding:24px 22px;border-radius:12px}
+  .topnav-inner{height:auto;flex-wrap:wrap;padding:10px 14px;gap:10px}
+  .tabs{order:3;width:100%}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div class="topnav-inner">
+    <span class="t">安全网关竞品分析</span>
+    <div class="tabs"><button class="tab" data-target="sec-h1-1" title="一、分析背景与目的"><span class="tab-no">一</span><span class="tab-tip">一、分析背景与目的</span></button><button class="tab" data-target="sec-h1-2" title="二、四款机型规格速览对比"><span class="tab-no">二</span><span class="tab-tip">二、四款机型规格速览对比</span></button><button class="tab" data-target="sec-h1-3" title="三、TP-Link Fusion 2.5G —— 极简运维 + 多站点 SMB"><span class="tab-no">三</span><span class="tab-tip">三、TP-Link Fusion 2.5G —— 极简运维 + 多站点 SMB</span></button><button class="tab" data-target="sec-h1-4" title="四、Ubiquiti Cloud Gateway Max —— 生态中枢 + 安全深度"><span class="tab-no">四</span><span class="tab-tip">四、Ubiquiti Cloud Gateway Max —— 生态中枢 + 安全深度</span></button><button class="tab" data-target="sec-h1-5" title="五、MikroTik hEX S (2025) —— 极致性价比 + 全功能 RouterOS"><span class="tab-no">五</span><span class="tab-tip">五、MikroTik hEX S (2025) —— 极致性价比 + 全功能 RouterOS</span></button><button class="tab" data-target="sec-h1-6" title="六、Firewalla Gold Plus —— 消费级易用 + 企业级安全深度"><span class="tab-no">六</span><span class="tab-tip">六、Firewalla Gold Plus —— 消费级易用 + 企业级安全深度</span></button><button class="tab" data-target="sec-h1-7" title="七、GL.iNet Brume 3 现状与四竞品对比：缺口与优势"><span class="tab-no">七</span><span class="tab-tip">七、GL.iNet Brume 3 现状与四竞品对比：缺口与优势</span></button><button class="tab" data-target="sec-h1-8" title="八、横向对比与对 Brume 4 / Pro 的定位启示"><span class="tab-no">八</span><span class="tab-tip">八、横向对比与对 Brume 4 / Pro 的定位启示</span></button></div>
+    <button class="toggle" id="toggle">🌓 深色</button>
+  </div>
+</nav>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">安全网关竞品应用场景<br>与功能映射分析
+      <small>四竞品版 · Fusion 2.5G / UCG-Max / hEX S / Gold Plus</small>
+    </div>
+    <div id="toc-body"></div>
+    <button class="menu-btn" id="menu" style="margin-top:10px">☰ 本章目录</button>
+  </aside>
+  <main class="main">
+    <div class="cover">
+      <h1>安全网关竞品应用场景与功能映射分析</h1>
+      <p>TP-Link Fusion 2.5G · Ubiquiti Cloud Gateway Max · MikroTik hEX S (2025) · Firewalla Gold Plus —— 含 GL.iNet Brume 3 现状对比与 Brume 4 / Pro 启示</p>
+    </div>
+    <nav class="crumb" id="crumb"></nav>
+    <div class="content">
+    <section class="section" id="sec-h1-1" data-title="一、分析背景与目的">
+<p><strong><span style="color:#1F4E79">安全网关</span></strong><strong><span style="color:#1F4E79">竞品</span></strong><strong><span style="color:#1F4E79">应用场景与功能映射分析</span></strong></p>
+<p>本文聚焦tp-link的Fusion 2.5G、UBNT的Cloud Gateway Max、Mikrotik的hEX S、Firewalla Gold Plus几个竞品机型，通过&quot;应用场景 → 该场景所需功能&quot;的映射方法，拆解其产品定义逻辑，结合Brume3的现状为 GL.iNet 下一代安全网关（Brume 4、Brume Pro）的功能取舍与差异化定位提供直接参照。</p>
+<p><strong>四款机型分别代表了四种典型的产品哲学：</strong></p>
+<ul><li>TP-Link Fusion 2.5G —— &quot;极简运维 + 多站点 SMB&quot;：把控制器、云管理、SD-WAN 打包进一台无 license 费的网关，靠触摸屏与蓝牙部署降低 IT 门槛。</li><li>Ubiquiti Cloud Gateway Max（UCG-Max）—— &quot;生态中枢 + 安全深度&quot;：作为 UniFi 全家桶的本地大脑，集成网络/监控/门禁/对讲，安全靠 55,000+ 签名 + 区域防火墙。</li><li>MikroTik hEX S (2025) —— &quot;极致性价比 + 全功能 RouterOS&quot;：69 美元的有线路由器，给技术用户提供企业级路由深度，代价是学习与配置门槛。</li><li>Firewalla Gold Plus —— &quot;消费级易用 + 企业级安全深度&quot;：以零订阅的全功能安全栈（内联 IPS、行为分析、设备级可视）与 App 化易用管理，吃掉重视安全但不愿折腾的高阶家庭与小型办公室用户，是 Brume Pro 最直接的同价位竞品。</li></ul>
+</section>
+<section class="section" id="sec-h1-2" data-title="二、四款机型规格速览对比" hidden>
+<div class="table-wrap"><table>
+<thead><tr><td>维度</td><td>TP-Link Fusion 2.5G</td><td>UBNT Cloud Gateway Max</td><td>MikroTik hEX S (2025)</td><td>Firewalla Gold Plus</td></tr></thead>
+<tbody><tr><td>参考价格</td><td>约 $130–160（Omada 值价款）</td><td>$279（美）/ ¥2,599（国行）</td><td>$69</td><td>$629</td></tr><tr><td>定位人群</td><td>单/多站点小型企业</td><td>Prosumer 家庭 + 小型办公室 + UniFi 生态</td><td>家庭 / SOHO / 实验室 / 媒体工作室</td><td>高阶家庭 / 小型办公室（重视安全）</td></tr><tr><td>CPU / 内存</td><td>四核 ARM A53 @2.0GHz / 2GB DDR4</td><td>四核 ARM A53 @1.5GHz / 3GB</td><td>双核 ARM EN7562CT @950MHz / 512MB</td><td>四核 Intel J4125 @2.0GHz / 4GB DDR4</td></tr><tr><td>网口</td><td>5×2.5G（4WAN+1 LAN）</td><td>5×2.5G（4WAN+1 LAN）</td><td>5×1G + 1×2.5G SFP</td><td>4×2.5G（灵活 WAN/LAN）</td></tr><tr><td>IDS/IPS 吞吐</td><td>2.1 Gbps</td><td>2.3 Gbps（55,000+ 签名需订阅）</td><td>无原生 IDS/IPS（需自装第三方）</td><td>内联 IPS 3.5 Gbps（全速 DPI，无订阅）</td></tr><tr><td>VPN 性能</td><td>IPsec 1023 / WG 605 / LightLink 527 Mbps</td><td>WireGuard / Teleport / IPsec / OpenVPN</td><td>IPsec 仅 ~188 Mbps（本型号偏弱）</td><td>WireGuard 500 / OpenVPN 120 Mbps</td></tr><tr><td>SD-WAN</td><td>Full Mesh 最多 20 站点</td><td>Site Magic 零配置</td><td>需手动配置（无原生 SD-WAN）</td><td>Group 管理 + Site-to-Site 10 连接</td></tr><tr><td>本地运维</td><td>2.51&quot; 彩色触控屏</td><td>0.96&quot; 状态屏</td><td>无屏（靠 CLI/Web）</td><td>无屏（App + 状态灯）</td></tr><tr><td>云管理</td><td>内置控制器，免 license 云管理</td><td>UniFi OS 控制器（本地免费）</td><td>无官方云（自建/第三方）</td><td>Firewalla App + MSP Lite（免费 Web）</td></tr><tr><td>最大功耗</td><td>8.18 W</td><td>16.1 W</td><td>5–23 W（视附件）</td><td>10–15 W</td></tr><tr><td>产品哲学</td><td>开箱即用的 SMB 运维</td><td>生态整合的安全中枢</td><td>全功能、低价格的极客路由</td><td>零订阅的企业级安全深度</td></tr></tbody>
+</table></div>
+</section>
+<section class="section" id="sec-h1-3" data-title="三、TP-Link Fusion 2.5G —— 极简运维 + 多站点 SMB" hidden>
+<h2 id="h2-1" class="lvl2">3.1 产品定义逻辑</h2>
+<p>Fusion 2.5G 的核心卖点不是&quot;参数最强&quot;，而是&quot;把 SMB 最头疼的三件事一次性解决&quot;：部署慢（蓝牙一键批量纳管）、出门难（触摸屏现场排障）、多店管不过来（Full Mesh SD-WAN + 免 license 云管理）。它把&quot;网关 + 控制器&quot;合二为一，直接对标没有专职 IT 的小微企业。</p>
+<h2 id="h2-2" class="lvl2">3.2 应用场景与功能映射</h2>
+<h3 id="h3-1" class="lvl3">场景 A：单店小微企业 / 单体办公室（20–50 人）</h3>
+<p>典型诉求：没有 IT 人员，希望插上就能用，且能管住员工上网、保住收银/POS 不掉线。</p>
+<div class="table-wrap"><table>
+<thead><tr><td>所需功能</td><td>对应 Fusion 2.5G 能力</td><td>价值</td></tr></thead>
+<tbody><tr><td>网络接入与高速内网</td><td>5×2.5G 端口接 Wi-Fi 7 AP / NAS / PC</td><td>消除局域网瓶颈</td></tr><tr><td>业务隔离</td><td>VLAN 分段（办公/访客/监控）</td><td>访客不触内网，合规且安全</td></tr><tr><td>威胁防护</td><td>IDS/IPS 2.1Gbps + 攻击防御 + ARP 检测</td><td>阻挡外部入侵与内网欺骗</td></tr><tr><td>员工上网行为管理</td><td>应用级 ACL + 内容过滤 + 广告拦截</td><td>限制娱乐/风险站点，净化网络</td></tr><tr><td>关键业务保障</td><td>一键 Auto QoS（优先 POS / 视频会议）</td><td>收银与会议不卡顿</td></tr><tr><td>零 IT 排障</td><td>2.51&quot; 触控屏看健康分/测速/告警</td><td>老板自己就能看，不用等上门</td></tr><tr><td>快速上线</td><td>蓝牙 + App 引导部署、一键批量纳管</td><td>半小时搞定，无需工程师</td></tr><tr><td>低成本运维</td><td>内置控制器 + 免 license 云管理</td><td>无持续授权费，TCO 低</td></tr></tbody>
+</table></div>
+<h3 id="h3-2" class="lvl3">场景 B：多门店连锁（总部 + 分店，如餐饮 / 零售 / 诊所）</h3>
+<p>典型诉求：总部要统一管策略、分店之间要联网、门店宽带可能不稳。</p>
+<div class="table-wrap"><table>
+<thead><tr><td>所需功能</td><td>对应 Fusion 2.5G 能力</td><td>价值</td></tr></thead>
+<tbody><tr><td>多店互联</td><td>Full Mesh SD-WAN 最多 20 站点（无需公网 IP）</td><td>分钟级打通总部与分店</td></tr><tr><td>远程访问</td><td>Omada LightLink VPN 一键接入 + 智能分流</td><td>总部 IT 远程运维，流量不绕远</td></tr><tr><td>站点间加密</td><td>Site-to-Site VPN（IPsec / WireGuard）</td><td>跨店数据传输加密</td></tr><tr><td>宽带冗余</td><td>最多 4-WAN 负载均衡 + 自动故障切换</td><td>门店断一根宽带也不停业</td></tr><tr><td>统一策略</td><td>云管理平台集中下发 ACL / 内容过滤</td><td>总部一套策略覆盖全部门店</td></tr><tr><td>总部集中监控</td><td>Web / App 远程查看各店状态</td><td>问题早发现，减少出差</td></tr></tbody>
+</table></div>
+<h3 id="h3-3" class="lvl3">场景 C：医疗诊所 / 合规敏感场所</h3>
+<ul><li>VLAN 隔离患者 Wi-Fi 与内部 HIS/医保系统，满足最小权限与数据隔离。</li><li>内容过滤 + DNS 安全，阻断钓鱼与恶意域名，降低合规风险。</li><li>IDS/IPS + 4-WAN 冗余，确保诊疗业务&quot;不断网、不中毒&quot;。</li><li>触摸屏快速诊断 + 免费云管理，控制运维人力成本。</li></ul>
+</section>
+<section class="section" id="sec-h1-4" data-title="四、Ubiquiti Cloud Gateway Max —— 生态中枢 + 安全深度" hidden>
+<h2 id="h2-3" class="lvl2">4.1 产品定义逻辑</h2>
+<p>UCG-Max 不是一台&quot;网关&quot;，而是 UniFi 全家桶的本地大脑：它运行完整 UniFi 套件（Network / Protect / Access / Talk / Connect），可管理 30+ 设备、300+ 客户端，并可选装 NVMe SSD 当作 NVR 给摄像头录像。安全能力来自 55,000+ 威胁签名（CyberSecure 订阅）与区域防火墙。它的护城河是&quot;生态粘性&quot;——用户一旦部署 UniFi AP/摄像头，就很难换网关。</p>
+<h2 id="h2-4" class="lvl2">4.2 应用场景与功能映射</h2>
+<h3 id="h3-4" class="lvl3">场景 A：高端家庭 / Home Lab / Prosumer</h3>
+<div class="table-wrap"><table>
+<thead><tr><td>所需功能</td><td>对应 UCG-Max 能力</td><td>价值</td></tr></thead>
+<tbody><tr><td>多设备隔离</td><td>Zone-Based 区域防火墙 + VLAN 子网分段</td><td>IoT / 主网 / 访客严格隔离</td></tr><tr><td>远程访问</td><td>WireGuard / Teleport 零配置 VPN</td><td>手机一键回家网络</td></tr><tr><td>净化家庭网络</td><td>Ad Blocking + 内容过滤</td><td>去广告、护娃上网</td></tr><tr><td>跨 VLAN 服务发现</td><td>mDNS 反射</td><td>HomeKit / Chromecast 跨网段可用</td></tr><tr><td>本地监控</td><td>可选 NVMe SSD（最大 2TB）跑 UniFi Protect</td><td>摄像头录像不出云，隐私可控</td></tr><tr><td>流量可视</td><td>DPI 应用识别 + 0.96&quot; 状态屏</td><td>看清家里谁在占带宽</td></tr></tbody>
+</table></div>
+<h3 id="h3-5" class="lvl3">场景 B：小型办公室（20–50 人）</h3>
+<div class="table-wrap"><table>
+<thead><tr><td>所需功能</td><td>对应 UCG-Max 能力</td><td>价值</td></tr></thead>
+<tbody><tr><td>威胁防护</td><td>2.3Gbps IDS/IPS + 55,000+ 签名（CyberSecure）</td><td>接近企业级防护深度</td></tr><tr><td>多宽带冗余</td><td>Multi-WAN 负载均衡 + LTE 备份</td><td>关键业务不掉线</td></tr><tr><td>统一身份认证</td><td>集成 RADIUS 服务器（802.1X）</td><td>员工按身份入网，权限可控</td></tr><tr><td>应用层管控</td><td>Application-Aware L7 防火墙 + 内容过滤</td><td>精细到应用的安全策略</td></tr><tr><td>复杂路由</td><td>OSPF / BGP 动态路由</td><td>多分支/多出口拓扑自适应</td></tr><tr><td>统一管理</td><td>一套控制器管 30+ UniFi 设备</td><td>AP/交换机/网关一个界面</td></tr></tbody>
+</table></div>
+<h3 id="h3-6" class="lvl3">场景 C：UniFi 生态中枢（已有 AP / 摄像头 / 门禁）</h3>
+<ul><li>运行完整 UniFi 套件：Network 管网络、Protect 管最多 15 路 HD / 8 路 2K / 5 路 4K 摄像头（需 SSD）。</li><li>Access 管门禁、Talk 管对讲、Connect 管 IoT——一台网关成为楼宇智能底座。</li><li>统一控制器消除多厂商割裂，是小办公室&quot;一个品牌搞定所有&quot;的核心理由。</li></ul>
+</section>
+<section class="section" id="sec-h1-5" data-title="五、MikroTik hEX S (2025) —— 极致性价比 + 全功能 RouterOS" hidden>
+<h2 id="h2-5" class="lvl2">5.1 产品定义逻辑</h2>
+<p>hEX S (2025) 售价仅 $69，却给到 2.5G SFP 上行、全端口可定义 WAN/LAN、RouterOS v7 完整功能（VLAN / 防火墙 / 流量整形 / BGP / OSPF / MPLS / 脚本）、PoE-in/out 与 USB 3.0 存储。它的逻辑是&quot;把企业级路由能力下放到爱好者与小微预算&quot;——代价是学习曲线陡、无官方云管理、无原生 IDS/IPS、无屏。</p>
+<h2 id="h2-6" class="lvl2">5.2 应用场景与功能映射</h2>
+<h3 id="h3-7" class="lvl3">场景 A：家庭 / SOHO 有线核心路由</h3>
+<div class="table-wrap"><table>
+<thead><tr><td>所需功能</td><td>对应 hEX S (2025) 能力</td><td>价值</td></tr></thead>
+<tbody><tr><td>吃满多千兆宽带</td><td>2.5G SFP 上行接 2Gbps+ 光纤</td><td>破除千兆 WAN 瓶颈</td></tr><tr><td>灵活组网</td><td>任意端口可设为 WAN/LAN/Bridge</td><td>不被固定 WAN 口限制</td></tr><tr><td>内网隔离</td><td>VLAN 分段 + 高级防火墙规则</td><td>技术用户精细化管控</td></tr><tr><td>带宽保障</td><td>Traffic Shaping 流量整形</td><td>关键设备优先</td></tr><tr><td>高速内网</td><td>端口 bonding（2×1G 绑 NAS = 2Gbps）</td><td>大文件传输不卡</td></tr><tr><td>本地存储</td><td>USB 3.0 接 SSD 做文件共享</td><td>轻量 NAS 免另购</td></tr></tbody>
+</table></div>
+<h3 id="h3-8" class="lvl3">场景 B：家庭实验室 / 技术爱好者</h3>
+<ul><li>RouterOS v7 全功能：BGP / OSPF / MPLS / SNMP / 脚本，可模拟企业网络做实验。</li><li>低功耗（空闲 5W）、壁挂设计、宽温 -40~70°C，适合 7×24 常开。</li><li>容器/脚本扩展，满足极客自定义需求。</li></ul>
+<h3 id="h3-9" class="lvl3">场景 C：小型办公室 / 分支边缘（SMB Edge）</h3>
+<div class="table-wrap"><table>
+<thead><tr><td>所需功能</td><td>对应 hEX S (2025) 能力</td><td>价值</td></tr></thead>
+<tbody><tr><td>VLAN + 防火墙</td><td>原生支持，规则可精确到接口</td><td>基础隔离与防护</td></tr><tr><td>下游设备供电</td><td>端口 5 被动 PoE-out（≤57V）</td><td>一根线给 AP / 摄像头供电</td></tr><tr><td>免适配器取电</td><td>端口 1 PoE-in（18–57V）</td><td>从上游交换机取电，整洁部署</td></tr><tr><td>双电源冗余</td><td>DC jack + PoE-in 双输入</td><td>断电不瘫</td></tr><tr><td>站点到站点</td><td>手动配置 IPsec / WireGuard VPN</td><td>需自行搭，无原生 SD-WAN</td></tr></tbody>
+</table></div>
+<p><span style="color:#595959">风险提示：本型号 IPsec 实测仅约 188 Mbps，VPN 性能是明显短板；且无硬件加速 IDS/IPS，安全依赖用户自装第三方规则，门槛高。</span></p>
+<h3 id="h3-10" class="lvl3">场景 D：内容创作者 / 媒体工作室</h3>
+<ul><li>2.5G SFP 直连编辑机，端口 bonding 到 NAS，实现 2Gbps 级素材读写。</li><li>Traffic Shaping 保证剪辑/直播流量优先，避免被备份任务挤占。</li></ul>
+</section>
+<section class="section" id="sec-h1-6" data-title="六、Firewalla Gold Plus —— 消费级易用 + 企业级安全深度" hidden>
+<h2 id="h2-7" class="lvl2">6.1 产品定义逻辑</h2>
+<p>Firewalla Gold Plus 的底层逻辑是&quot;把企业级安全下沉到消费级体验&quot;：它用一台 4×2.5GbE 的紧凑无风扇盒子，通过 App 引导完成部署，把内联 IPS、行为分析、设备级流量洞察、家长控制、VPN、DNS 加密等原本需要多台设备/订阅的功能，打包成&quot;零月费&quot;的一体化安全栈。它的核心用户是&quot;重视网络安全但不想学 RouterOS、也不想被 UniFi 全家桶绑定&quot;的高阶家庭与小型办公室——这与 GL Brume Pro 的产品哲学高度重叠，是 Brume Pro 最直接、也最难缠的同价位竞品。</p>
+<h2 id="h2-8" class="lvl2">6.2 应用场景与功能映射</h2>
+<h3 id="h3-11" class="lvl3">场景 A：高阶家庭 / 智能家居（数十至上百联网设备）</h3>
+<p>典型诉求：IoT 设备乱、孩子上网要管、隐私要保护、出差要安全回家、还要看清&quot;家里到底谁在偷跑流量&quot;。</p>
+<div class="table-wrap"><table>
+<thead><tr><td>所需功能</td><td>对应 Firewalla Gold Plus 能力</td><td>价值</td></tr></thead>
+<tbody><tr><td>IoT / 主网隔离</td><td>Unlimited VLAN + 网络分段（儿童/员工/访客/IoT）</td><td>摄像头、智能音箱单独隔离，防横向扩散</td></tr><tr><td>新设备管控</td><td>新设备自动隔离（Quarantine）+ 一键 Lockdown</td><td>陌生设备上线即受限，防入侵</td></tr><tr><td>家长 / 内容控制</td><td>应用级阻断（游戏/社媒/成人/赌博）+ Safe Search（过滤掉搜索结果中的异常内容） + 排程(按时段生效)</td><td>按人按时段管理上网</td></tr><tr><td>DNS 隐私</td><td>DoH + Unbound 本地递归解析 + Ad Block</td><td>加密 DNS、去广告、防劫持</td></tr><tr><td>远程回家</td><td>内置 WireGuard / OpenVPN Server（零订阅）</td><td>手机一键安全接入家庭网络</td></tr><tr><td>流量洞察</td><td>Deep Insight 设备级带宽 + 域名下钻 + 告警</td><td>一眼看清谁在占带宽、谁在异常外联</td></tr><tr><td>异常行为防护</td><td>Active Protect 实时阻断恶意站点 + 行为分析</td><td>未知威胁也能拦，不只靠签名</td></tr></tbody>
+</table></div>
+<h3 id="h3-12" class="lvl3">场景 B：小型办公室 / 家庭办公室（SOHO，1–20 人）</h3>
+<p>典型诉求：要&quot;开箱即安全&quot;、要合规留痕、要 VPN 远程、要宽带冗余，但不想养专职 IT。</p>
+<div class="table-wrap"><table>
+<thead><tr><td>所需功能</td><td>对应 Firewalla Gold Plus 能力</td><td>价值</td></tr></thead>
+<tbody><tr><td>威胁防护</td><td>内联 IPS（~3.5 Gbps 全速）+ Geo-IP 区域封锁（Unlimited）</td><td>外部入侵与恶意流量实时拦截</td></tr><tr><td>业务隔离</td><td>VLAN 分段（员工/访客/监控）</td><td>访客不触内网，满足最小权限</td></tr><tr><td>合规留痕</td><td>完整事件/流量日志 + 告警 + 可导出</td><td>等保/审计有迹可循</td></tr><tr><td>远程访问</td><td>WireGuard / OpenVPN Server + Site-to-Site 10 连接</td><td>员工远程、门店互联零订阅</td></tr><tr><td>宽带冗余</td><td>Multi-WAN 负载均衡 + 故障切换 + 智能路由(PBR)</td><td>关键业务不断网</td></tr><tr><td>零订阅</td><td>标准安全功能无月费</td><td>TCO 可预期，无授权悬崖</td></tr></tbody>
+</table></div>
+<h3 id="h3-13" class="lvl3">场景 C：多设备 / 多站点轻量 MSP（技术服务提供者 / 多家庭管理）</h3>
+<ul><li>Firewalla MSP Lite：免费 Web 界面集中管理多台 Gold Plus，适合托管多家庭/小办公室网络的服务商。</li><li>Group 功能：一套策略批量下发到分组内的设备，降低重复配置。</li><li>Docker 容器：在网关上直接跑自定义服务（Pi-hole、代理、监控），免另购盒子。</li><li>Site-to-Site VPN（最多 10 连接）+ 智能路由：把不同流量（如视频走 VPN、银行走异 WAN）按策略分流。</li></ul>
+<h2 id="h2-9" class="lvl2">6.3 与 Brume 3 / 其他竞品的差异化要点</h2>
+<ul><li>最大长板：安全深度与可视性——内联 IPS ~3.5 Gbps 全速、行为分析、设备级 Deep Insight，是四款机型中&quot;开箱安全最完整&quot;的；且全部零订阅。</li><li>相对 Brume 3：Firewalla 在 IDS/IPS、VLAN、行为分析、日志审计上全面领先（Brume 3 均无）；但 VPN 性能反而较弱（WG 500 vs Brume 3 1100 Mbps），且价格 $629 远高于 Brume 3 的 ~$129.99。</li><li>相对 UCG-Max：Firewalla 安全栈更&quot;消费化&quot;（App 引导、开箱即安全、无签名订阅），但生态整合弱（无 AP/摄像头/门禁全家桶）。</li><li>相对 hEX S：Firewalla 用&quot;零配置安全 + App 管理&quot;抵消了 hEX S 的路由深度与价格优势，瞄准的是&quot;不想折腾&quot;的人群。</li><li>短板：移动端优先管理（Web UI 较弱）、4GB RAM 限制较重 Docker 使用、初始告警噪声需调优、无本地运维屏。</li></ul>
+</section>
+<section class="section" id="sec-h1-7" data-title="七、GL.iNet Brume 3 现状与四竞品对比：缺口与优势" hidden>
+<h2 id="h2-10" class="lvl2">6.1 Brume 3（GL-MT5000）现有功能盘点</h2>
+<p>Brume 3 是 GL.iNet 当前在售旗舰安全网关，定位&quot;高性能 VPN 安全网关&quot;，基于 OpenWrt。其核心能力如下：</p>
+<div class="table-wrap"><table>
+<thead><tr><td>功能类别</td><td>Brume 3 现有能力</td><td>备注</td></tr></thead>
+<tbody><tr><td>VPN 接入</td><td>WireGuard ~1100 Mbps（实测 1181）、OpenVPN-DCO ~1000 Mbps</td><td>跨境/远程接入强项</td></tr><tr><td>VPN 增强</td><td>VPN 混淆（Stealth）、Tailscale / ZeroTier 原生集成</td><td>受控网络可用、零配置组网，有反馈Tailscale / ZeroTier版本比较早</td></tr><tr><td>流量分析</td><td>DPI 免费、流量可视化</td><td>看清内网流量构成</td></tr><tr><td>广告/追踪拦截</td><td>AdGuard Home 内置</td><td>开箱去广告与跟踪</td></tr><tr><td>云管理</td><td>GoodCloud 远程管理（含免费层）</td><td>远程运维/查看，功能偏少</td></tr><tr><td>网口</td><td>3×2.5GbE（全 2.5G）</td><td>内网无千兆瓶颈</td></tr><tr><td>功耗/形态</td><td>&lt;5W 超低功耗、极紧凑（弱电箱神器）</td><td>部署灵活、静音，存在用户喜欢金属壳体</td></tr><tr><td>系统</td><td>OpenWrt 底层、可装插件</td><td>可玩性高，有反馈Op版本太老，有安全隐患</td></tr><tr><td>缺失项</td><td>无原生 IDS/IPS、无防火墙可视化配置、无日志审计、无 VLAN 原生、无 IPsec、无本地运维屏、1GB RAM 限制、固件成熟度待提升</td><td>安全深度与易管性短板</td></tr></tbody>
+</table></div>
+<h2 id="h2-11" class="lvl2">7.2 与四竞品的能力对比</h2>
+<div class="table-wrap"><table>
+<thead><tr><td>能力维度</td><td>Brume 3</td><td>Fusion 2.5G</td><td>UCG-Max</td><td>hEX S (2025)</td><td>Firewalla Gold Plus</td><td>Brume 3 判定</td></tr></thead>
+<tbody><tr><td>WireGuard 性能</td><td>~1100 Mbps</td><td>605 Mbps</td><td>（强）</td><td>慢</td><td>500 Mbps</td><td>✅ 优势</td></tr><tr><td>VPN 混淆</td><td>有</td><td>无</td><td>无</td><td>无</td><td>仅支持 AmneziaWG 客户端</td><td>✅ 优势</td></tr><tr><td>Tailscale/ZeroTier</td><td>原生集成</td><td>无</td><td>无</td><td>需手动</td><td>需手动</td><td>✅ 优势</td></tr><tr><td>功耗</td><td>&lt;5W</td><td>8.18W</td><td>16.1W</td><td>5–23W</td><td>10–15W</td><td>✅ 优势</td></tr><tr><td>尺寸/重量</td><td>75 × 92 × 25/148g</td><td>160 × 130 × 31.5/510g</td><td>141.8 × 127.6 × 30/519g</td><td>113 × 89 × 28/400g</td><td>130 × 110 × 34/565g</td><td>✅ 优势</td></tr><tr><td>参考价格</td><td>~$129.99</td><td>$130–160</td><td>$279</td><td>$69</td><td>$629</td><td>居中（定位不同：Firewalla 安全更深）</td></tr><tr><td>防火墙功能</td><td>OpenWrt netfilter（L3/L4，无可视化 Zone 防火墙）</td><td>应用级 ACL + L3/L4 + 攻击防御 + 内容过滤</td><td>Zone-Based 区域防火墙 + L7 应用感知 + 内容过滤</td><td>RouterOS 完整 L3/L4/L7（CLI/WebFig，无开箱可视化）</td><td>Zone 防火墙 + 应用级 + 地理封锁 + L7 规则 UI（Active Protect）</td><td>❌ 缺口（对 UCG/Fusion/Firewalla 缺可视化与 L7）</td></tr><tr><td>日志审计能力</td><td>系统日志（logread/syslog），无集中可视化审计、无外部转发 UI、无合规报告</td><td>系统/安全/流量日志 + 外部 Syslog 转发 + 触摸屏告警 + Omada 云集中日志</td><td>UniFi OS 完整事件/流量/安全日志 + Syslog 转发 + 本地存储 + 云审计（含 Protect 审计）</td><td>RouterOS 完整分级日志（topic/action：磁盘/邮件/syslog），功能深但需手动配置，无开箱可视化</td><td>Deep Insight 设备级日志 + 告警 + 可导出（MSP Lite）+AI分析</td><td>❌ 缺口（缺集中/可视化审计；对 Firewalla 差距最大）</td></tr><tr><td>IDS/IPS</td><td>无，有DPI，AdGuard</td><td>2.1G</td><td>2.3G(55K)</td><td>无原生</td><td>内联 ~3.5 Gbps（全速 DPI）</td><td>❌ 缺口</td></tr><tr><td>VLAN 原生</td><td>无</td><td>有</td><td>有(Zone)</td><td>有</td><td>有</td><td>❌ 缺口</td></tr><tr><td>IPsec</td><td>无</td><td>有(1023)</td><td>有</td><td>有(弱)</td><td>有（OpenVPN/WG）</td><td>❌ 缺口</td></tr><tr><td>本地运维屏</td><td>无</td><td>2.51&quot; 触屏</td><td>0.96&quot; 状态屏</td><td>无</td><td>无屏（App+状态灯）</td><td>❌ 缺口</td></tr><tr><td>多站点 SD-WAN</td><td>弱（靠 GoodCloud）</td><td>Full Mesh 20 站</td><td>Site Magic</td><td>手动</td><td>Group + Site-to-Site 10</td><td>❌ 缺口</td></tr><tr><td>云管理(免 license)</td><td>GoodCloud 部分免费</td><td>免 license 云</td><td>本地免费</td><td>无官方云</td><td>App + MSP Lite 免费</td><td>居中</td></tr><tr><td>生态整合</td><td>单品</td><td>Omada 生态</td><td>UniFi 全家桶</td><td>RouterOS 单品</td><td>单品（App 为主）</td><td>❌ 缺口(对 UCG；Firewalla 同为单品)</td></tr><tr><td>路由功能深度</td><td>OpenWrt 中等</td><td>中等</td><td>强(OSPF/BGP)</td><td>最强(BGP/OSPF/MPLS)</td><td>Router 模式够用（VLAN/静态/PPPoE/PBR）</td><td>❌ 缺口(对 hEX/UCG)</td></tr><tr><td>2.5G 上行</td><td>3×2.5G</td><td>5×2.5G</td><td>5×2.5G</td><td>2.5G SFP</td><td>4×2.5G</td><td>✅ 持平/优</td></tr><tr><td>PoE-in/out</td><td>无</td><td>无</td><td>无</td><td>有</td><td>无</td><td>❌ 缺口(对 hEX)</td></tr><tr><td>端口 bonding</td><td>无</td><td>无</td><td>无</td><td>有</td><td>Link Aggregation</td><td>❌ 缺口(对 hEX/ Firewalla)</td></tr></tbody>
+</table></div>
+<p><span style="color:#595959">判定说明：</span><span style="color:#595959">✅</span><span style="color:#595959"> 表示该维度 Brume 3 相对四竞品占优或持平；</span><span style="color:#595959">❌</span><span style="color:#595959"> 表示存在明显缺口；&quot;居中&quot;表示各有取舍。</span></p>
+<h2 id="h2-12" class="lvl2">7.3 分机型缺口与优势</h2>
+<h3 id="h3-14" class="lvl3">7.3.1 vs TP-Link Fusion 2.5G</h3>
+<p><strong>优势：</strong></p>
+<ul><li>VPN 性能与隐蔽性全面领先：WireGuard 1100 vs 605 Mbps，且独有 VPN 混淆与 Tailscale/ZeroTier 原生集成，更适合跨境与受控网络远程接入。</li><li>功耗与体积：&lt;5W、弱电箱级紧凑，明显优于 Fusion 的 8.18W 与更大机身。</li><li>价格：~$129.99 略低于 Fusion 2.5G 区间，单点性价比更高。</li></ul>
+<p><strong>缺口：</strong></p>
+<ul><li>本地运维屏缺失：无触摸屏，现场排障靠 App/Web，不如 Fusion 2.51&quot; 触屏直观。</li><li>多站点能力弱：无 Full Mesh SD-WAN（20 站点）、无内置控制器 + 免 license 云的多门店集中管理。</li><li>安全与行为管理开箱度低：无 IDS/IPS、无 VLAN 原生、无应用级 ACL/内容过滤 UI、无 4-WAN 负载均衡——小微企业的&quot;开箱安全 + 行为管理&quot;由 Fusion 包圆。</li></ul>
+<h3 id="h3-15" class="lvl3">7.3.2 vs UBNT Cloud Gateway Max</h3>
+<p><strong>优势：</strong></p>
+<ul><li>价格不足一半（$129.99 vs $279），功耗仅约 1/5，单点家庭/SOHO 性价比突出。</li><li>VPN 混淆与 Tailscale 为 UCG-Max 所无的差异化远程接入能力。</li><li>单点场景下开箱即用与 VPN 体验优于需先搭建 UniFi 生态的 UCG-Max。</li></ul>
+<p><strong>缺口：</strong></p>
+<ul><li>生态粘性强弱悬殊：UCG-Max 是 UniFi 全家桶大脑（Network/Protect/Access/Talk），Brume 3 是单品，难绑定 AP/摄像头/门禁。</li><li>安全深度差距：无 55,000+ 签名 IDS/IPS、无 Zone 防火墙可视化、无可选 NVR、无 RADIUS / OSPF / BGP。</li><li>管理规模：UCG-Max 一套控 30+ 设备 / 300+ 客户端，Brume 3 聚焦单点。</li></ul>
+<h3 id="h3-16" class="lvl3">7.3.3 vs MikroTik hEX S (2025)</h3>
+<p><strong>优势：</strong></p>
+<ul><li>开箱易用性碾压：Web/App 图形化管理 + Tailscale/ZeroTier 集成 + DPI + AdGuard 开箱即用，无需学 RouterOS。</li><li>VPN 性能更强：WireGuard 1100 Mbps 且带混淆；hEX S 的 IPsec 仅 ~188 Mbps、无原生 VPN 客户端易用封装。</li><li>内网端口更现代：3×2.5G RJ45（hEX S 仅 1×2.5G SFP + 5×1G）。</li></ul>
+<p><strong>缺口：</strong></p>
+<ul><li>路由功能深度不及：无 BGP/OSPF/MPLS/脚本/端口 bonding，技术用户可玩性弱于 RouterOS v7。</li><li>灵活供电缺失：无 PoE-in/out。</li><li>价格高出近一倍（$129.99 vs $69），对纯预算敏感用户劣势明显。</li></ul>
+<h3 id="h3-17" class="lvl3">7.3.4 vs Firewalla Gold Plus</h3>
+<p><strong>优势：</strong></p>
+<ul><li>VPN 性能与价格：WireGuard 1100 vs 500 Mbps，且 ~$129.99 仅为 Firewalla $629 的约 1/5，单点性价比与跨境远程接入体验更优。</li><li>定位聚焦：Brume 3 是&quot;高性能 VPN 网关&quot;，Firewalla 是&quot;全功能安全网关&quot;——在&quot;只想要好用的 VPN + 轻量安全&quot;场景，Brume 3 更聚焦、更便宜。</li></ul>
+<p><strong>缺口：</strong></p>
+<ul><li>安全深度代差：Firewalla 内联 IPS ~3.5 Gbps 全速、行为分析、设备级 Deep Insight、Unlimited VLAN、Geo-IP 封锁均为开箱即带且零订阅，Brume 3 三项全无。</li><li>日志与合规：Firewalla 完整事件/流量日志 + 告警 + MSP Lite 集中管理，Brume 3 仅基础系统日志，无法满足 SMB 合规留痕。</li><li>消费级打磨：Firewalla 的 App 引导部署、新设备自动隔离、一键 Lockdown 等&quot;零配置安全&quot;体验，是 Brume 3 当前未及的易用性细节。</li></ul>
+<h2 id="h2-13" class="lvl2">7.4 缺口对 Brume 4 / Pro 的启示</h2>
+<h3 id="h3-18" class="lvl3">7.4.1 四款竞品范式与各自可借鉴点</h3>
+<ul><li>Fusion 2.5G —— 极简 SMB 运维范式：触摸屏 + 免 license 云日志。Brume 4 借鉴&quot;本地运维小屏（P1）+ GoodCloud 免 license 云管理&quot;。</li><li>UCG-Max —— 生态整合安全中枢范式：Zone-Based 防火墙 + UniFi 全家桶。Brume Pro 借鉴&quot;图形化 Zone / 应用级防火墙可视化（P0）+ 可选本地存储做轻量 NVR 生态雏形&quot;。</li><li>hEX S —— 极致性价比 + 路由深度范式：全功能 RouterOS。Brume 4 不抢极客，转而吃&quot;想要企业级安全但不愿学 RouterOS&quot;的用户。</li><li>Firewalla Gold Plus —— 消费级易用 + 企业级安全深度范式：零配置安全 + 内联全速 IPS + 行为分析 + 零月费。这是 Brume Pro 最直接的对标靶，其&quot;App 功能丰富+易用 / 新设备自动隔离 / 一键 Lockdown&quot;应成为 Brume 4 / Pro 易用性 P0 的体验标杆。</li></ul>
+<h3 id="h3-19" class="lvl3">7.4.2 安全深度：四家共同门槛，Firewalla 拉高天花板</h3>
+<ul><li>Brume 4 必须补 IDS/IPS + VLAN 原生（P0），否则在 Fusion / UCG-Max 面前&quot;安全网关&quot;名不副实（缺口判定详见 7.2、8.3）。</li><li>Firewalla 已将&quot;内联 IPS 全速 ~3.5 Gbps + 行为分析 + 设备级 Deep Insight + 零订阅&quot;做成标配，把安全深度的天花板拉到四家最高。Brume Pro 不能只满足于&quot;比 Fusion / UCG 安全&quot;，还要对标 Firewalla 的&quot;全速不降速 IPS + 行为级检测&quot;。</li><li>差异化抓手：Brume Pro 应全系列开放 Suricata（不像 Firewalla 把开源规则集砍给 Gold Pro 独占），并以&quot;零订阅核心规则集 + 可选威胁情报订阅增强&quot;双轨，正面错位 Firewalla 的&quot;零月费但硬件昂贵&quot;。</li></ul>
+<h3 id="h3-20" class="lvl3">7.4.3 可观测性 / 日志审计：Firewalla 的 Deep Insight 是最高标杆</h3>
+<ul><li>Brume 4 提供可视化审计面板 + Syslog 外部转发（对标 Fusion Omada 云集中日志 / UCG UniFi OS 审计），满足排障与合规（等保 / PCI）留痕需求，是进军企业 / 合规市场的门票。</li><li>Brume Pro P1 应把&quot;设备级流量洞察（对标 Firewalla Deep Insight）+ AI 行为分析&quot;作为蓝海能力——四竞品中仅 Firewalla 有深度且偏告警；Brume Pro 以&quot;AI 异常检测 + 图形化洞察&quot;建立代差，且硬件成本远低于 Firewalla。</li></ul>
+<h3 id="h3-21" class="lvl3">7.4.4 多站点 / SD-WAN 与易用性护城河</h3>
+<ul><li>多站点软肋：Brume Pro 补齐 GoodCloud 多租户 + 轻量 SD-WAN，回应 Fusion 的 20 站点、UCG 的 Site Magic、Firewalla 的 Group + Site-to-Site。</li><li>易用性护城河：四款里 Firewalla 与 Brume 3 最同路（均走消费级易用路线）；Brume 4 不能为了堆参数牺牲开箱易用 + Tailscale / 混淆护城河，且应在&quot;零配置安全&quot;体验上追平 Firewalla。</li></ul>
+<h3 id="h3-22" class="lvl3">7.4.5 价格锚点与结论重述</h3>
+<ul><li>Brume 4 卡 $179–199 需证明&quot;比 Fusion 更安全、比 hEX 更易用&quot;；Brume Pro 卡 $349–429，以&quot;Firewalla 约一半价格 + 全开放 Suricata + 核心安全零订阅&quot;硬刚 Firewalla 的零月费但 $629 硬件门槛。</li></ul>
+<p><strong>结论</strong><strong>总结</strong><strong>重述：</strong></p>
+<p>Brume 4 的 P0 是补齐全竞品已具备的&quot;安全底座&quot;（IDS/IPS + VLAN + 防火墙可视化 + 日志审计），并守住 Brume 3 已验证的&quot;易用 + VPN + 功耗&quot;护城河；Brume Pro 的 P0/P1 则是以&quot;约一半价格、零订阅、全开放 Suricata + Zone 防火墙 + 设备级 AI 洞察&quot;，正面取代 Firewalla 所定义的&quot;消费级易用 + 企业级安全深度&quot;范式——这是四竞品分析后最清晰、也最具壁垒的产品机会点。</p>
+</section>
+<section class="section" id="sec-h1-8" data-title="八、横向对比与对 Brume 4 / Pro 的定位启示" hidden>
+<h2 id="h2-14" class="lvl2">8.1 四机型能力雷达（场景维度）</h2>
+<div class="table-wrap"><table>
+<thead><tr><td>能力维度</td><td>Fusion 2.5G</td><td>UCG-Max</td><td>hEX S (2025)</td><td>Firewalla Gold Plus</td></tr></thead>
+<tbody><tr><td>SMB 极简运维</td><td>★★★★★</td><td>★★★☆☆</td><td>★☆☆☆☆</td><td>★★★★☆</td></tr><tr><td>多站点 SD-WAN</td><td>★★★★★</td><td>★★★★☆</td><td>★☆☆☆☆</td><td>★★★☆☆</td></tr><tr><td>安全深度 (签名/IPS)</td><td>★★★☆☆</td><td>★★★★★</td><td>★★☆☆☆（需自装）</td><td>★★★★★（内联 3.5Gbps）</td></tr><tr><td>生态整合</td><td>★★★★☆（Omada）</td><td>★★★★★（UniFi）</td><td>★☆☆☆☆</td><td>★★☆☆☆（单品）</td></tr><tr><td>路由功能深度</td><td>★★★☆☆</td><td>★★★★☆</td><td>★★★★★</td><td>★★★☆☆</td></tr><tr><td>性价比</td><td>★★★★☆</td><td>★★★☆☆</td><td>★★★★★</td><td>★★☆☆☆（$629）</td></tr><tr><td>易用性(开箱即用)</td><td>★★★★★</td><td>★★★★☆</td><td>★★☆☆☆</td><td>★★★★★</td></tr><tr><td>本地运维屏</td><td>★★★★★</td><td>★★★☆☆</td><td>☆☆☆☆☆</td><td>☆☆☆☆☆</td></tr><tr><td>防火墙可视化 (Zone/应用级)</td><td>★★★★☆</td><td>★★★★★</td><td>★★★☆☆（功能深无开箱UI）</td><td>★★★★★</td></tr><tr><td>日志审计 / 可观测性</td><td>★★★★☆</td><td>★★★★★</td><td>★★★☆☆（需手动配置）</td><td>★★★★★（Deep Insight）</td></tr></tbody>
+</table></div>
+<p><span style="color:#595959">评分：★越多越强（5 星为满分），为基于公开规格与用户反馈的相对判断，非精确基准测试。</span></p>
+<h2 id="h2-15" class="lvl2">8.2 价格带与竞争地图</h2>
+<div class="table-wrap"><table>
+<thead><tr><td>价格带</td><td>代表机型</td><td>核心人群</td><td>Brume 对应产品</td></tr></thead>
+<tbody><tr><td>$60–80</td><td>MikroTik hEX S (2025)</td><td>极客 / 小微预算</td><td>价格锚点，非直接对手</td></tr><tr><td>$130–200</td><td>TP-Link Fusion 2.5G</td><td>无 IT 的小微企业</td><td>Brume 4</td></tr><tr><td>$279</td><td>UBNT Cloud Gateway Max</td><td>Prosumer + 小办公室</td><td>Brume Pro 下沿对标</td></tr><tr><td>$349–429</td><td>（Fusion Pro / UCG-Fiber 区间）</td><td>网络+安防一体 / 高端</td><td>Brume Pro</td></tr><tr><td>$629</td><td>Firewalla Gold Plus</td><td>重视安全的高阶家庭 / SOHO/小型办公室</td><td>Brume Pro 直接竞品</td></tr></tbody>
+</table></div>
+<p>地图解读：四款竞品恰好覆盖了&quot;极简 SMB（Fusion）→ 生态中枢（UCG-Max）→ 极客路由（hEX S）→ 消费级安全深度（Firewalla）&quot;四档；Brume 4 卡位 $179–199 正面切入 Fusion 领地，Brume Pro 卡位 $349–429 上探 UCG-Max 与 Firewalla 区间，形成&quot;下打 Fusion、上顶 UCG、硬刚 Firewalla&quot;的三线夹击。</p>
+<p>防火墙可视化与日志审计是 Brume Pro 上探 UCG-Max / Firewalla 区间、进入合规敏感场景（医疗 / 金融分支）的入场券；Firewalla 已用&quot;零订阅全功能安全&quot;树立了该区间的标杆，Brume Pro 必须以&quot;更低价格 + 接近的安全深度 + 开箱易用&quot;正面回应，否则在此区间缺乏说服力；而对 Brume 4，它们则是切开 Fusion 领地、证明&quot;更安全&quot;的最直接证据。</p>
+<h2 id="h2-16" class="lvl2">8.3 与 Brume 3 现状的交叉印证：共性缺口速览</h2>
+<p>综合第七章 Brume 3 与四竞品的 17 维对比，四款竞品已具备、而 Brume 3 明显缺失、必须在 Brume 4 / Pro 补齐的能力高度集中在以下四项（详见第七章 7.2、7.4）：</p>
+<div class="table-wrap"><table>
+<thead><tr><td>共性缺口</td><td>竞品现状</td><td>Brume 3 状态</td><td>应在哪代补齐</td></tr></thead>
+<tbody><tr><td>安全深度：IDS/IPS + VLAN 原生 + IPsec</td><td>Fusion 2.1G / UCG 2.3G(55K) / Firewalla 内联 5Gbps 开箱即带</td><td>三项均无</td><td>Brume 4（P0）</td></tr><tr><td>防火墙可视化 (Zone/应用级 + L7)</td><td>Fusion 应用级 ACL + L7 / UCG Zone-Based + L7 / Firewalla Zone+地理+L7 / hEX 完整 L3–L7（无开箱 UI）</td><td>仅 netfilter L3/L4 包过滤</td><td>Brume 4（P0）</td></tr><tr><td>可观测性 / 日志审计 (Syslog + 审计)</td><td>Fusion Omada 云集中日志 / UCG UniFi OS 审计 / Firewalla Deep Insight+MSP / hEX 分级日志（需手动）</td><td>仅系统日志，无集中 / 可视化</td><td>Brume 4（P0）</td></tr><tr><td>本地运维屏</td><td>Fusion 2.51&quot; 触屏 / UCG 0.96&quot; 状态屏</td><td>无屏</td><td>Brume 4 / Pro（P1）</td></tr><tr><td>多站点 SD-WAN</td><td>Fusion 20 站 Full Mesh / UCG Site Magic / Firewalla Group+Site-to-Site</td><td>仅弱 GoodCloud</td><td>Brume Pro（P1）</td></tr><tr><td>路由/供电深度</td><td>hEX S BGP/OSPF/MPLS + PoE + bonding</td><td>弱</td><td>Brume Pro 适度补，Brume 4 不强求</td></tr></tbody>
+</table></div>
+<p>同时应守住 Brume 3 已建立的护城河：<strong>OpenWrt</strong><strong>可玩性高</strong><strong>、</strong><strong>高性能VPN </strong><strong>WireGuard 1100Mbps、VPN 混淆、Tailscale/ZeroTier 原生、</strong><strong>小体型</strong><strong>低</strong><strong>功耗、3×2.5G 端口</strong>——这些在 Fusion/UCG/hEX/Firewalla 上均非标配（Firewalla 的 WG 仅 500Mbps、UCG 无混淆、hEX 无原生 VPN 易用封装），是 Brume 4 / Pro 不应牺牲的差异点。</p>
+<h2 id="h2-17" class="lvl2">8.4 对 Brume 4 / Pro 的功能取舍建议</h2>
+<p><strong>汇总</strong><strong>上述内容</strong><strong>，给出下一代产品功能优先级：</strong></p>
+<ul><li>Brume 4（P0，对标 Fusion 2.5G / 卡位 $179–199）：开箱 IDS/IPS、VLAN 原生支持(mDNS/SSDP中继)、可视化防火墙（Zone / 应用级 + L7 感知）、可视化日志审计 + （加密）Syslog 转发、WireGuard+多VPN + IPsec、App/Web 双管理、GoodCloud 免 license 云管理、A/B 分区防变砖。</li><li>Brume 4（P1）：本地运维小屏（借鉴 Fusion 触摸屏）。</li><li>Brume Pro（P0，对标 UCG-Max / 卡位 $349–429）：完整版 Suricata（10,000+ 规则）+ 可视化策略编辑器（防火墙 / IDS 统一编排）、Zone-Based 防火墙、审计中心（日志留存 + 报表 + 合规导出）、多 WAN、可选 NVMe 本地存储（安全审计、上网流量/数据记录、特征库本地缓存、DNS等数据的缓存、配置/系统文件、抓包、文件服务器、Docker、AI数据分析、后续可能的轻量 NVR 潜力搭配我司IPC）。</li><li>Brume Pro（P1，建立蓝海）：ZTNA 零信任模块、AI 行为分析（通过建模&quot;正常行为基线&quot;并识别异常偏离，或识别可疑行为序列；长期的行为分析预计要依赖云端）+设备级流量洞察、Docker 容器、MSP 多租户管理（GoodCloud 企业版）。</li><li>共同原则：以&quot;核心安全零订阅&quot;对抗 UCG-Max 的付费签名、以&quot;开箱易用&quot;对抗 hEX S 的配置门槛、以&quot;免 license 云管理 + 本地屏&quot;对抗 Fusion 的极简运维、以&quot;更低价格 + 同等安全深度&quot;硬刚 Firewalla 的零订阅安全栈——形成&quot;企业级安全深度 × 消费级易用性&quot;的独特定位。</li></ul>
+<h2 id="h2-18" class="lvl2">8.5 差异化定位战略总结</h2>
+<p><strong>Brume 4 一句话定位：</strong></p>
+<p>&quot;比 Fusion 更安全、比 hEX 更易用&quot;——$179–199 价位做到开箱 IDS/IPS + VLAN + 免 license 云，吃掉无 IT 小微企业的&quot;安全网关&quot;心智。</p>
+<p><strong>Brume Pro 一句话定位：</strong></p>
+<p>&quot;Firewalla 一半价格、零订阅的企业级安全中枢&quot;——$349–429 价位以完整 Suricata + Zone 防火墙 + 同等安全深度（内联 IPS / 行为分析 / 设备级可视）+ ZTNA/AI 蓝海，正面硬刚 Firewalla Gold Plus 的 $629 零订阅安全栈。</p>
+<ul><li>护城河（必须守住）：VPN 混淆 + Tailscale 原生 + 超低功耗 + 开箱易用——这是 Brume 3 已验证、竞品难抄的优势（Firewalla WG 仅 500Mbps、UCG 无混淆、hEX 无原生 VPN 易用封装）。</li><li>最大风险：若 Brume 4 为堆参数牺牲易用性、或 Brume Pro 安全深度不足却收费、或&quot;安全网关&quot;缺可视化防火墙与审计留痕，将同时失去对 hEX、UCG 与 Firewalla 的差异化。建议以&quot;核心安全零订阅 + 开箱即用的可视化防火墙与审计&quot;作为不可妥协的产品红线——这是 Firewalla 已验证、且 Brume Pro 必须正面超越的标杆。</li><li>公司后续对<strong>安全功能</strong><strong>深度</strong><strong>的开发计划</strong>将会是一个重大影响点，这关系到安全网关会是个整网安全中枢的“安全网关”还是砍掉无线功能的便宜“有线网关”。</li></ul>
+</section>
+    </div>
+  </main>
+</div>
+<script>
+// theme
+const t=document.getElementById('toggle');
+function setTheme(d){document.body.classList.toggle('dark',d==='dark');localStorage.setItem('sg-theme',d);}
+setTheme(localStorage.getItem('sg-theme')||'light');
+t.onclick=()=>setTheme(document.body.classList.contains('dark')?'light':'dark');
+
+// helpers
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function setCrumb(root,cur){
+  const c=document.getElementById('crumb');
+  if(cur) c.innerHTML='<span class="root">'+esc(root)+'</span><span class="sep">›</span><span class="cur">'+esc(cur)+'</span>';
+  else c.innerHTML='<span class="root">'+esc(root)+'</span>';
+}
+
+// chapters
+const sections=[...document.querySelectorAll('.section')];
+const tabs=[...document.querySelectorAll('.tab')];
+const tocBody=document.getElementById('toc-body');
+let spy=null, currentIdx=0;
+
+function buildToc(sec){
+  const heads=[...sec.querySelectorAll('h2[id],h3[id]')];
+  tocBody.innerHTML='';
+  if(!heads.length){
+    tocBody.innerHTML='<p style="color:var(--sub);font-size:12px;padding:6px 10px">本章无子节</p>';
+    return;
+  }
+  const ul=document.createElement('ul');ul.className='toc-list';
+  const linkMap=new Map();
+  heads.forEach(h=>{
+    const li=document.createElement('li');
+    li.className='toc-l'+h.tagName[1];
+    const a=document.createElement('a');
+    a.href='#'+h.id;a.textContent=h.textContent;
+    a.onclick=ev=>{ev.preventDefault();
+      const tg=document.getElementById(h.id);
+      tg&&tg.scrollIntoView({behavior:'smooth',block:'start'});
+      setCrumb(sections[currentIdx].dataset.title, h.textContent);};
+    li.appendChild(a);ul.appendChild(li);linkMap.set(h.id,a);
+  });
+  tocBody.appendChild(ul);
+  if(spy)spy.disconnect();
+  spy=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+    linkMap.forEach(a=>a.classList.remove('active'));
+    const a=linkMap.get(e.target.id);a&&a.classList.add('active');
+    setCrumb(sections[currentIdx].dataset.title, e.target.textContent);
+  }});},{rootMargin:'-12% 0px -80% 0px',threshold:0});
+  heads.forEach(h=>spy.observe(h));
+}
+
+function show(idx){
+  currentIdx=idx;
+  sections.forEach((s,i)=>{s.hidden=i!==idx;});
+  tabs.forEach((tb,i)=>tb.classList.toggle('active',i===idx));
+  buildToc(sections[idx]);
+  setCrumb(sections[idx].dataset.title, '');
+  window.scrollTo({top:0,behavior:'instant'});
+  try{location.hash='sec-'+sections[idx].id.replace('sec-','');}catch(e){}
+}
+tabs.forEach((tb,i)=>tb.onclick=()=>show(i));
+
+// mobile menu
+const mb=document.getElementById('menu'),sb=document.getElementById('sidebar');
+mb&&(mb.onclick=()=>sb.classList.toggle('open'));
+
+// init
+show(0);
+</script>
+</body>
+</html>
