@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Brume 4 &amp; Pro 产品规划</title>
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --ink:#1f2329; --sub:#5b6270; --line:#e6e8eb;
+  --brand:#2563eb; --th:#eef2ff; --th2:#e0e7ff; --zebra:#fafbff;
+  --shadow:0 1px 3px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.06);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  line-height:1.75;font-size:15.5px;}
+a{color:var(--brand);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.topnav{position:sticky;top:0;z-index:25;background:rgba(247,248,250,.9);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);box-shadow:0 2px 10px rgba(16,24,40,.05)}
+.topnav-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:14px;
+  padding:0 20px;height:54px}
+.topnav .t{font-weight:800;font-size:14.5px;white-space:nowrap;color:var(--ink)}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;flex:1 1 auto}
+.tab{position:relative;border:1px solid var(--line);background:var(--panel);color:var(--sub);
+  border-radius:9px;padding:7px 13px;font-size:13px;cursor:pointer;white-space:nowrap;
+  transition:all .15s ease;font-family:inherit}
+.tab-no{font-weight:700;font-size:14px}
+.tab-tip{position:absolute;top:calc(100% + 9px);left:50%;transform:translateX(-50%);
+  white-space:nowrap;background:var(--ink);color:#fff;padding:7px 11px;border-radius:8px;
+  font-size:12.5px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .15s ease;
+  z-index:40;box-shadow:var(--shadow)}
+.tab-tip::before{content:"";position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
+  border:6px solid transparent;border-bottom-color:var(--ink)}
+.tab:hover .tab-tip{opacity:1}
+.tab:hover{color:var(--ink);border-color:var(--th2)}
+.tab.active{background:var(--brand);color:#fff;border-color:var(--brand);font-weight:600;
+  box-shadow:0 2px 8px rgba(37,99,235,.35)}
+.tab.active .tab-no{color:#fff}
+.crumb{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:13px;color:var(--sub);
+  background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:9px 14px;
+  margin-bottom:18px;box-shadow:var(--shadow)}
+.crumb .root{font-weight:700;color:var(--brand)}
+.crumb .sep{color:var(--sub);opacity:.6;margin:0 2px}
+.crumb .cur{color:var(--ink);font-weight:600}
+.toggle{flex:0 0 auto;border:1px solid var(--line);background:var(--panel);color:var(--ink);
+  border-radius:30px;padding:7px 13px;font-size:12.5px;cursor:pointer;white-space:nowrap;
+  box-shadow:var(--shadow)}
+
+.layout{display:flex;align-items:flex-start;max-width:1280px;margin:0 auto;gap:28px;padding:22px 20px 60px}
+.sidebar{position:sticky;top:74px;align-self:flex-start;width:290px;flex:0 0 290px;
+  max-height:calc(100vh - 90px);overflow:auto;padding:18px 8px 30px 0;border-right:1px solid var(--line)}
+.brand{font-weight:800;font-size:14px;color:var(--ink);margin:0 0 4px;letter-spacing:.2px;line-height:1.4}
+.brand small{display:block;font-weight:500;color:var(--sub);font-size:12px;margin-top:5px}
+.chap-label{font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--brand);
+  text-transform:uppercase;margin:6px 0 8px;padding-left:10px}
+.toc-list{list-style:none;margin:0;padding:0;font-size:13.5px}
+.toc-list li{margin:1px 0}
+.toc-list a{display:block;padding:5px 10px;border-radius:7px;color:var(--sub);border-left:2px solid transparent}
+.toc-list a:hover{background:var(--zebra);color:var(--ink);text-decoration:none}
+.toc-list a.active{background:var(--th);color:var(--brand);border-left-color:var(--brand);font-weight:600}
+.toc-l1{font-weight:700;color:var(--ink)!important}
+.toc-l2{padding-left:22px!important}
+.toc-l3{padding-left:38px!important;font-size:12.5px}
+.menu-btn{display:none;border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 12px;cursor:pointer}
+.main{flex:1 1 auto;min-width:0}
+.cover{background:linear-gradient(135deg,#1e3a8a,#2563eb 55%,#0ea5e9);
+  color:#fff;border-radius:16px;padding:30px 34px;box-shadow:var(--shadow);margin-bottom:22px}
+.cover h1{margin:0 0 8px;font-size:24px;line-height:1.3}
+.cover p{margin:0;opacity:.9;font-size:13.5px}
+.content{background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  padding:32px 38px;box-shadow:var(--shadow)}
+h1{font-size:23px;margin:0 0 16px;padding-bottom:10px;border-bottom:2px solid var(--th2);color:#13204a}
+h2{font-size:19px;margin:28px 0 12px;color:#1d3a8f;padding-left:11px;border-left:4px solid var(--brand)}
+h3{font-size:16px;margin:20px 0 10px;color:#334155}
+p{margin:10px 0}
+ul{margin:10px 0;padding-left:22px}
+li{margin:5px 0}
+li.num{list-style:decimal}
+strong{color:#13204a}
+.table-wrap{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;background:#fff}
+thead th{background:linear-gradient(180deg,var(--th),var(--th2));color:#1e2a5e;
+  font-weight:700;text-align:left;padding:10px 12px;border:1px solid #cfd8ff;white-space:nowrap}
+tbody td{padding:9px 12px;border:1px solid var(--line);vertical-align:top}
+tbody tr:nth-child(even){background:var(--zebra)}
+tbody tr:hover{background:#eef4ff}
+code{background:#eef2ff;color:#0b3b6f;padding:1px 6px;border-radius:5px;font-size:13px;
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+
+body.dark{--bg:#0f1420;--panel:#171c28;--ink:#e6e9f0;--sub:#9aa3b5;--line:#2a3344;
+  --th:#1d2742;--th2:#243056;--zebra:#1b2230;--shadow:0 1px 3px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35)}
+body.dark a{color:#7cb0ff}
+body.dark strong{color:#fff}
+body.dark .toc-list a:hover{background:var(--zebra);color:#fff}
+body.dark thead th{color:#cdd8ff;border-color:#33406b}
+body.dark tbody td{border-color:var(--line)}
+body.dark tbody tr:hover{background:#1f2942}
+body.dark code{background:#1d2742}
+body.dark .topnav{background:rgba(15,20,32,.9)}
+
+@media(max-width:900px){
+  .layout{display:block;padding:16px}
+  .sidebar{position:static;width:auto;flex:none;max-height:none;border-right:none;
+    border-bottom:1px solid var(--line);padding:14px 16px;display:none}
+  .sidebar.open{display:block}
+  .menu-btn{display:inline-block}
+  .main{padding:0}
+  .content{padding:22px 18px;border-radius:12px}
+  .cover{padding:24px 22px;border-radius:12px}
+  .topnav-inner{height:auto;flex-wrap:wrap;padding:10px 14px;gap:10px}
+  .tabs{order:3;width:100%}
+}
+</style>
+</head>
+<body>
+<nav class="topnav">
+  <div class="topnav-inner">
+    <span class="t">Brume 4/Pro 产品规划</span>
+    <div class="tabs"><button class="tab" data-target="sec-h1-1" title="产品定位"><span class="tab-no">1</span><span class="tab-tip">产品定位</span></button><button class="tab" data-target="sec-h1-2" title="使用场景及目标用户"><span class="tab-no">2</span><span class="tab-tip">使用场景及目标用户</span></button><button class="tab" data-target="sec-h1-3" title="产品功能需求"><span class="tab-no">3</span><span class="tab-tip">产品功能需求</span></button><button class="tab" data-target="sec-h1-4" title="产品核心卖点"><span class="tab-no">4</span><span class="tab-tip">产品核心卖点</span></button></div>
+    <button class="toggle" id="toggle">🌓 深色</button>
+  </div>
+</nav>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">Brume 4 &amp; Pro 产品规划
+      <small>2026-08-13 版</small>
+    </div>
+    <div id="toc-body"></div>
+    <button class="menu-btn" id="menu" style="margin-top:10px">☰ 本章目录</button>
+  </aside>
+  <main class="main">
+    <div class="cover">
+      <h1>Brume 4 &amp; Pro 产品规划</h1>
+      <p>基于用户反馈三源调研 + 竞品应用场景映射研究的产品规划</p>
+    </div>
+    <nav class="crumb" id="crumb"></nav>
+    <div class="content">
+    <section class="section" id="sec-h1-1" data-title="产品定位">
+<p><strong>Brume 4/Pro产品规划</strong></p>
+<p>Brume 系列自初代（2019 VPN 盒子）到 Brume 3（2026 高性能 VPN 安全网关）始终以「OpenWrt 开放性 + 无 Wi-Fi 纯网关 + 高性价比」从底部渗透。</p>
+<p>Brume 4 / Pro 的代际跃迁核心，主要包含两点：</p>
+<p><strong>第一点 · 补齐安全底座，守住已验证的护城河。</strong> 把 Brume 3 缺失的安全底座（IDS/IPS + VLAN + 可视化防火墙 + 日志审计）一次性补齐，同时守住三代已验证的「易用 + VPN + 低功耗」护城河，使产品从纯 VPN 网关升级为安全网关 / 安全中枢。这一点决定本代能否站住脚：<strong>安全底座是补短板</strong>（Firewalla、TP-Link Fusion 在同价位已具备 IDS/IPS 与 Zone 防火墙），而<strong>易用、VPN 与低功耗是不能为堆参数而牺牲的既有资产</strong>。</p>
+<p><strong>第二点 · 以 Brume 为本地核心，后续搭建 GL.iNet 「双层」产品生态。</strong> 在安全底座之上，把 Brume 定位为 GL.iNet 生态的本地核心——网关、控制器、安全中枢三合一。生态采用「双层」打法：主干纳管 GL.iNet 自有的 AP / Mesh 路由、交换机、存储、智能家居与客户端，形成「一台网关起步 → 逐步替换全屋 / 全公司设备」的复购路径；在自有品类尚未铺齐前，以 Brume 内置的开放控制器纳管**已刷标准 OpenWrt 的第三方 AP / 交换机**作为差异化加层，吃 OpenWrt 基因、打 UniFi / Fusion 封闭生态的软肋。</p>
+<p><em>该路径已被两个标杆验证：Ubiquiti 的 UniFi Cloud Gateway 全系出厂内置 UniFi OS 控制器、无需外接 Cloud Key，网关即整个生态的本地大脑；TP-Link Fusion 网关以「Gateway &amp; Controller in One、License-Free Cloud Management」为核心主张，Fusion Pro 更把</em><em>网络控制器与视频监控 VMS 并入同一台本地设备。</em></p>
+<p><em>本代以架构预留与控制器内置为主，生态的商业价值要等品类补齐后才充分释放，不宜一上来就铺全品类。</em></p>
+<h2 id="h2-1" class="lvl2">一句话定位</h2>
+<div class="table-wrap"><table>
+<thead><tr><td>机型</td><td>价位</td><td>一句话定位</td><td>生态定位</td></tr></thead>
+<tbody><tr><td>Brume 4</td><td>$179-199</td><td>比 Fusion 更安全、比 hEX 更易用的开箱安全网关：无专业 IT 小微企业/分支和进阶安全家庭的 $179 级安全基础设施。</td><td>GL.iNet 双层生态本地核心起点：内置轻量控制器，可纳管 GL 自有设备及已刷标准 OpenWrt 的第三方 AP/交换。</td></tr><tr><td>Brume Pro</td><td>$349-429</td><td>Firewalla一半价格、零订阅的企业级安全中枢：以完整 Suricata + Zone 防火墙 + 同等安全深度，硬刚 Firewalla $629。</td><td>同上并支持多站点/多租户；预留 M.2/SSD 承载审计，可作企业级生态中枢。</td></tr></tbody>
+</table></div>
+<h2 id="h2-2" class="lvl2">与 Brume 3 及四竞品的定位区隔</h2>
+<div class="table-wrap"><table>
+<thead><tr><td>机型</td><td>市场定位</td><td>对标心智</td><td>相对跃迁</td></tr></thead>
+<tbody><tr><td>Brume 3</td><td>高性能 VPN 安全网关</td><td>VPN 强、可玩、低功耗</td><td>（基线）</td></tr><tr><td>Brume 4</td><td>适合无专业 IT 小微企业 / SOHO 的安全网关</td><td>比 Fusion 安全、比 hEX 易用</td><td>补安全底座：IDS/IPS+VLAN+可视化防火墙+审计；
+内置控制器纳管 GL 自有 + 已刷 OpenWrt 第三方设备，开放可扩展。</td></tr><tr><td>Brume Pro</td><td>高阶家庭 / 小办公室 / 分支的安全中枢</td><td>Firewalla 半价平替</td><td>安全深度+可观测+多站点，正面超越 Firewalla 范式；
+多租户/多站点 + 预留 SSD，双层生态中枢（自有主干 + 第三方 OpenWrt 加层）</td></tr><tr><td>Fusion 2.5G</td><td>单/多站点 SMB</td><td>极简运维打包</td><td>Brume 4 以安全深度反制其付费签名；以双层生态中枢的开放性反制其生态锁定</td></tr><tr><td>UCG-Max</td><td>UniFi 生态中枢</td><td>生态整合安全</td><td>Brume Pro 以零订阅和双层生态中枢的开放性反制其生态锁定</td></tr><tr><td>hEX S</td><td>性价比 RouterOS</td><td>69 美元全功能</td><td>Brume 4 吃要企业安全但不愿学 RouterOS 用户；
+RouterOS 单设备，无统一生态后台</td></tr><tr><td>Firewalla Gold Plus</td><td>高阶家庭安全</td><td>零订阅安全栈</td><td>Brume Pro 最直接同价位靶（约半价硬刚）；
+单盒/云管理，弱设备纳管和封闭生态</td></tr></tbody>
+</table></div>
+<h2 id="h2-3" class="lvl2">生态定位：Brume 作为 GL.iNet 本地生态中枢</h2>
+<p>第二点代际跃迁对应的定位主张：Brume 不只是一台安全网关，而是 GL.iNet 生态的本地核心，并采用「<strong>双层生态</strong>」打法——以自有 AP / 交换机 / NAS 为主干一体管控，以纳管已刷标准 OpenWrt 的第三方设备为差异化加层。下表对照两个已验证该模式的标杆，明确 Brume 4 / Pro 的取法。</p>
+<div class="table-wrap"><table>
+<thead><tr><td>维度</td><td>UniFi</td><td>TP-Link Fusion</td><td>Brume 4/Pro的取法</td></tr></thead>
+<tbody><tr><td>中枢形态</td><td>Cloud Gateway 全系出厂内置 UniFi OS 控制器，无需外接 Cloud Key，网关即生态本地大脑</td><td>主张「Gateway &amp; Controller in One」；Fusion Pro 带 SSD 槽，网络控制器与视频监控 VMS 同机融合</td><td>Brume 4 内置轻量控制器，可纳管 GL 自有设备、并经开放控制器纳管已刷标准 OpenWrt 的第三方 AP / 交换机（路径一）；Brume Pro 预留 M.2 / SSD，先承载日志审计与本地留存。</td></tr><tr><td>云与订阅</td><td>网关与云管理仍免授权费（Site Manager 远程及多站点管理免费）；但 2026 起新增付费增值：UniFi Identity Enterprise $5/用户/月（仅美国区）、CyberSecure 安全订阅 $99/设备/年（Proofpoint 威胁库驱动）、UI Care 延保 $25–119/设备</td><td>云管理免授权费（Omada Cloud Essentials 自 2024-09 起免费）</td><td>延续「核心安全零订阅」红线；订阅只放在云侧多站点、AI 洞察等增量能力</td></tr><tr><td>生态扩展方式</td><td>统一 UniFi OS + 应用式扩展（Network / Protect / Access / Talk / Connect / Drive / Identity），统一 UI 把加购摩擦降到最低</td><td>Omada / Omada Pro / Festa / VIGI / Tapo 多品牌并行，Fusion 是「网络 + 监控」的融合点，尚未统一到一个 App</td><td>Brume 先作为本地控制器，将 GL 自有网关 / AP / 交换机 / 智能家居 / 存储纳入统一后台（主干）；
+同期以开放控制器纳管已刷标准 OpenWrt 的第三方 AP / 交换机作为差异化加层（路径一），吃 OpenWrt 基因、打 UniFi / Fusion 封闭软肋；
+其后开放插件 / 应用市场，形成「自有硬件主干一体管控 + 第三方 OpenWrt 设备纳管加层」的双层生态。</td></tr><tr><td>主要客群</td><td>家庭发烧友、SMB、MSP / 集成商、多站点连锁</td><td>SMB 与轻商用，走分销 / 经销商渠道</td><td>极客与远程工作者（存量基本盘）→ SOHO / 小微企业 → MSP / 多站点</td></tr><tr><td>变现结构</td><td>硬件毛利为主：FY2025 营收约 26 亿美元、GAAP 毛利率 43.4%，订阅约占营收 12%（第三方投研口径，非官方财报直引）</td><td>硬件销售为主，云免费作为拉动手段</td><td>硬件毛利为主，叠加生态复购</td></tr><tr><td>入门门槛</td><td>网关单机入门已下探（UCG-Ultra $129、UCG-Max $279）；带 PoE/存储/生态齐套的 UDM 系 $379–$599，全屋/全公司落地价仍偏高</td><td>Fusion 2.5G 官方商城售价 $169.99；Fusion Pro 定位更高、带 SSD 槽，MSRP 未公开</td><td>Brume 4 以 $179-199 做生态起点价，用低门槛换装机量</td></tr></tbody>
+</table></div>
+<p>生态搭建的分阶段路径：</p>
+<ul><li>阶段 0（本代 Brume 4 / Pro）：固化内置控制器 + 插件平台（纯软件），先把「中枢」的壳与骨做出来；同期并行推进路径一——开放控制器纳管已刷标准 OpenWrt 的第三方 AP / 交换机，作为差异化加层。</li><li>阶段 1：自有 AP 打样（1–2 款吸顶 / 面板 / 桌面 AP），统一后台纳管，跑通「加购一台设备零学习成本」。</li><li>阶段 2 / 3：交换机 OEM 引入 + 接入公司并行规划的家庭 NAS，统一账号、统一 App、统一策略下发；其后开放插件 / 应用市场与 MSP 多站点能力，形成开发者与渠道双飞轮。</li></ul>
+<p>差异化切入点：UniFi 与 TP-Link 的生态均为封闭系统，GL.iNet 可用三项两个标杆都不强的资产切入——OpenWrt 开源可定制性与插件生态、VPN / 跨境 / 隐私原生能力、海外 DTC 与极客社区口碑。</p>
+<p>生态风险与红线：生态是长周期投入，若品类不齐、后台体验不统一，反而会稀释 Brume 已验证的「易用」口碑。本代红线是不得因生态预埋牺牲单机开箱体验与低功耗，且不联网、不注册也能完整使用本机全部安全功能。</p>
+<h2 id="h2-4" class="lvl2">定位护城河与最大风险</h2>
+<div class="table-wrap"><table>
+<thead><tr><td>机型</td><td>必须守住的护城河</td><td>最大风险</td></tr></thead>
+<tbody><tr><td>Brume 4</td><td>VPN 混淆 + Tailscale 原生 + 超低功耗(&lt;5W) + 开箱易用（Brume 3 已验证、竞品难抄）；
+双层生态起点：内置控制器纳管 GL 自有 + 已刷标准 OpenWrt 第三方设备（路径一，实测≈125 款），吃 OpenWrt 基因、打 UniFi/Fusion 封闭软肋</td><td>为堆参数牺牲易用性；
+性能不足；
+生态若只靠路径一，可寻址基数=已刷机极客/homelab/MSP，非主流 SMB 走量、需用户刷机，故事偏虚</td></tr><tr><td>Brume Pro</td><td>同上 + 全开放 Suricata + 核心安全零订阅；
+双层生态中枢：预留 SSD 承载审计、多租户/多站点，自有主干 + 第三方 OpenWrt 加层</td><td>安全深度不足却收费；
+缺可视化防火墙与审计留痕；
+成本过高；
+自有 AP/交换机铺不齐时双层生态主干空转，被 UniFi/Fusion 一体化体验反制</td></tr></tbody>
+</table></div>
+<p><strong><span style="color:#EE0000">不可妥协的产品红线：核心安全零订阅 + 开箱即用的可视化防火墙与审计（Firewalla 已验证、Brume Pro必须正面超越的标杆）。</span></strong></p>
+</section>
+<section class="section" id="sec-h1-2" data-title="使用场景及目标用户" hidden>
+<p>用户反馈三源（Reddit r/GlInet、GL 官方论坛、电商官网/Amazon）的跨源强共识显示：最主流场景是「家庭 VPN 服务端 + 旅行路由作客户端」，第二主流是「旁路由/Drop-in + AdGuard/VPN」；真实但偏技术客群的需求是「纯有线网关 + 端口数 + 网络分段」。这些场景同时覆盖了 Brume 4 与 Brume Pro 的适用面。</p>
+<h2 id="h2-5" class="lvl2">核心使用场景</h2>
+<div class="table-wrap"><table>
+<thead><tr><td>使用场景</td><td>细分场景</td><td>典型表现</td><td>来源共识</td></tr></thead>
+<tbody><tr><td>家庭 / 个人发烧友场景</td><td>家庭 VPN 服务端 + 旅行客户端</td><td>异地 NAS 访问、跨境/远程办公、突破封锁</td><td>三源最主流，全部命中</td></tr><tr><td>家庭 / 个人发烧友场景</td><td>旁路由/Drop-in + AdGuard + VPN</td><td>家庭去广告、家长控制、透明桥接</td><td>第二主流（GL 论坛最高频）</td></tr><tr><td>家庭 / 个人发烧友场景</td><td>有线主路由 + 独立 AP/无线路由</td><td>已有 AP/无线路由，按需组网，不为用不上的 Wi-Fi 付费</td><td>无 Wi-Fi 是筛选器非需求</td></tr><tr><td>家庭 / 个人发烧友场景</td><td>轻 NAS / Home Lab / 玩机</td><td>OpenWrt 可装插件、Docker、NAS</td><td>极客与高阶用户高满意</td></tr><tr><td>多分支办公室/连锁店铺/商户</td><td>分支 S2S / 准 SD-WAN</td><td>小微企业多门店互联、MSP 批量部署</td><td>GL 论坛 MSP、Home Lab 证据强</td></tr><tr><td>小型办公室/高端家庭</td><td>网络分段+安全防护</td><td>Guest/IoT/VLAN 隔离+防火墙/IPS/IDS</td><td>GUI 缺分段、Zone防火墙、IPS/IDS是最大功能缺口</td></tr></tbody>
+</table></div>
+<h2 id="h2-6" class="lvl2">Brume 4 目标用户</h2>
+<ul><li>无 IT 的小微企业 / 分支 / 咖啡馆 / 诊所 / 小工作室：需要开箱安全网关心智，不愿养专业网管。</li><li>技术 DIY 但嫌 RouterOS 门槛高的用户：想要企业级安全（VLAN/IPS）却不愿学命令行。</li><li>家庭进阶用户：想要网络分段、IoT/Guest 隔离、家长控制的可视化配置。</li><li>出差 / 跨境办公人群：VPN 强项（WireGuard 1100+Mbps + 混淆 + Tailscale 原生）延续 Brume 3 优势。</li></ul>
+<h2 id="h2-7" class="lvl2">Brume Pro 目标用户</h2>
+<ul><li>重视安全的高阶家庭 / SOHO：Firewalla 用户的最佳平替（约半价、零订阅）。</li><li>多分支小企业 / 连锁门店：需要多站点 SD-WAN、审计中心与合规导出。</li><li>MSP / 企业 IT：多租户批量运维、主动健康告警、合规留痕。</li><li>智能家庭 / 多设备 IoT 用户：需要设备级流量洞察与 AI 行为分析。</li></ul>
+<h2 id="h2-8" class="lvl2">场景—机型匹配</h2>
+<div class="table-wrap"><table>
+<thead><tr><td>机型</td><td>优先场景</td><td>次要场景</td></tr></thead>
+<tbody><tr><td>Brume 4</td><td>无IT小微企业安全网关；
+家庭分段/家长控制；
+出差 VPN</td><td>分支 S2S（轻量）；
+玩机</td></tr><tr><td>Brume Pro</td><td>高阶家庭/SOHO 安全中枢；
+多分支审计；
+MSP 多租户</td><td>设备级 AI 洞察；
+轻量 NVR/Docker/NAS</td></tr></tbody>
+</table></div>
+<h2 id="h2-9" class="lvl2">生态客群分层与扩展场景</h2>
+<p>参照 UniFi 的客群分层（家庭发烧友 → SMB → MSP / 集成商 → 多站点连锁）来铺 Brume 的生态客群，其中后两层是 GL.iNet 目前最弱、也最需要靠生态而非单机去打开的部分。生态扩展采用「双层生态」打法——自有硬件（AP / 交换机 / NAS）为主干一体管控，纳管已刷标准 OpenWrt 的第三方设备（路径一）为差异化加层；路径一本代即可兑现、不依赖品类铺齐。</p>
+<div class="table-wrap"><table>
+<thead><tr><td>客群层</td><td>GL.iNet 当前状况</td><td>以 Brume 为核心的生态扩展路径</td><td>标杆参照</td></tr></thead>
+<tbody><tr><td>极客 / 远程工作者</td><td>存量基本盘，DTC 与社区口碑已建立</td><td>加购GL AP / 其他设备；或以 Brume 内置开放控制器纳管已刷标准 OpenWrt 的第三方 AP / 交换机（路径一，实测约 125 款），用 OpenWrt 基因打标杆封闭生态；用Op插件加载第三方功能，实现个性化能力扩展</td><td>UniFi 该层由社区与教程驱动</td></tr><tr><td>SOHO / 小微企业</td><td>Brume 3 已有渗透，但缺 VLAN、审计与集中管理</td><td>网关+交换机+AP整套替换，一个后台管全公司网络设备</td><td>UniFi SMB 与 TP-Link Fusion 的主战场</td></tr><tr><td>MSP / 系统集成商</td><td>目前薄弱，缺批量部署与多租户能力</td><td>多站点纳管、零接触批量上线、集中告警</td><td>UniFi Site Manager 免费多站点；Festa 主打 ZTP + SON 自组网</td></tr><tr><td>多站点 / 连锁</td><td>目前薄弱</td><td>统一策略下发 + 集中日志审计 + 站点互联</td><td>UniFi 多站点管理、Omada Pro</td></tr></tbody>
+</table></div>
+<div class="table-wrap"><table>
+<thead><tr><td>生态扩展场景</td><td>以 Brume 为核心的设备组合</td><td>生态价值</td></tr></thead>
+<tbody><tr><td>全屋安全联网</td><td>Brume 4 + 交换机 + GL Mesh / AP
+Brume 4 + 已刷标准 OpenWrt 的第三方 AP / 交换机</td><td>一个后台管全屋，安全、VPN 策略全局统一</td></tr><tr><td>小微企业 / 分支办公</td><td>Brume Pro + PoE 交换机 + AP</td><td>VLAN 隔离 + 日志审计 + 站点互联 +统一管控、一键配置，替代多品牌拼装方案</td></tr><tr><td>远程与跨境办公</td><td>Brume 4 + GL 移动路由 + 统一管控</td><td>家庭、出行、公司共用一套 VPN 拓扑，这是两个标杆都缺的维度</td></tr><tr><td>MSP 托管运维</td><td>多台 Brume + 云侧多站点管理</td><td>批量部署、集中告警、集中运维排障与生成报表，形成可复制的托管交付</td></tr></tbody>
+</table></div>
+<p>GL.iNet 短期不具备铺渠道纵深的条件，应先用出海 DTC + 开源社区内容把前两层客群的生态复购跑通，再谈 MSP 与多站点。</p>
+<p><em>渠道启示：UniFi 靠社区内容与经销商，SG&amp;A 长期低于营收 5%、几乎不设传统销售团队（第三方投研口径）；TP-Link 走分销与集成商渠道。</em></p>
+</section>
+<section class="section" id="sec-h1-3" data-title="产品功能需求" hidden>
+<h2 id="h2-10" class="lvl2">硬件需求</h2>
+<div class="table-wrap"><table>
+<thead><tr><td>模块</td><td>Brume 4</td><td>Brume Pro</td><td>说明</td></tr></thead>
+<tbody><tr><td>CPU</td><td>足以跑线速开箱 IPS</td><td>更强（全速 DPI/IPS 不降速）</td><td>参考竞品 IPS 吞吐 2.1-3.5 Gbps</td></tr><tr><td>网口</td><td>≥3×2.5GbE，考虑代际升级和双2.5G WAN网口跑满，建议4个口</td><td>≥4×2.5GbE，可以考虑配备10G SFP+光口/电口*2</td><td>多口避免外挂交换机引发 VLAN 难题</td></tr><tr><td>内存</td><td>≥2GB</td><td>≥4GB</td><td>消除 Brume 3 的 1GB 限制（具体要根据功能需要在评估）</td></tr><tr><td>本地运维屏</td><td>P1：小状态/触摸屏</td><td>可选屏</td><td>借鉴 Fusion 2.5 英寸触屏降 IT 门槛</td></tr><tr><td>本地存储</td><td>无</td><td>可选 NVMe（审计/缓存/Docker/轻量 NVR/轻量NAS）</td><td>Pro 生态雏形</td></tr><tr><td>多 WAN</td><td>支持</td><td>支持</td><td>回应多出口/宽带</td></tr><tr><td>功耗</td><td>&lt;5W 超低功耗</td><td>&lt;8W</td><td>守住低功耗静音护城河（弱电箱神器）</td></tr><tr><td>蓝牙</td><td>可选支持</td><td>可选支持</td><td>无WiFi、无有线终端时的快速开局（开局完成关闭）</td></tr><tr><td>PoE In</td><td>无</td><td>可选支持P1</td><td>多样供电，减少布线，优先级低</td></tr><tr><td>硬件Bypass接口</td><td>无</td><td>可选支持P1</td><td>增加可靠性</td></tr></tbody>
+</table></div>
+<h2 id="h2-11" class="lvl2">结构与工业设计需求</h2>
+<div class="table-wrap"><table>
+<thead><tr><td>项目</td><td>需求</td><td>回应的用户反馈 / 风险</td></tr></thead>
+<tbody><tr><td>形态</td><td>无 Wi-Fi 纯网关（延续差异化筛选器）</td><td>已有 AP 为何为用不上的 Wi-Fi 付费</td></tr><tr><td>壳体</td><td>可选金属壳体散热</td><td>发热信任缺口，部分Brume2用户喜欢</td></tr><tr><td>可靠性</td><td>A/B 双分区固件 + 自动回滚 + 带外恢复</td><td>Brume 2/MT2500 变砖（三源全命中）</td></tr><tr><td>温控</td><td>明确温控承诺、7×24 可用性指标</td><td>固件回归致可用性焦虑</td></tr><tr><td>安装</td><td>可选壁挂件P1</td><td>部分国内电商客户喜欢放到弱电箱或者挂在墙面</td></tr><tr><td>易用性</td><td>首装引导（免有线电脑门槛）</td><td>部分用户反馈首装必须有线电脑</td></tr><tr><td>端口布局</td><td>避免瓶颈、WAN/LAN 切换 UI 可视化</td><td>端口少、WAN/LAN 切换困惑</td></tr></tbody>
+</table></div>
+<h2 id="h2-12" class="lvl2">软件功能需求</h2>
+<p>共同原则：以核心安全零订阅对抗UCG-Max付费签名；以开箱易用对抗hEX S配置门槛；以免license云+本地屏对抗Fusion运维；以更低价格+同等安全深度硬刚Firewalla。</p>
+<div class="table-wrap"><table>
+<thead><tr><td>功能域</td><td>Brume 4（P0 必做 / P1 应做）</td><td>Brume Pro（P0 必做 / P1 应做）</td></tr></thead>
+<tbody><tr><td>安全底座</td><td>P0 开箱 IDS/IPS；VLAN 原生+简易化配置(支持mDNS/SSDP 中继)；丰富攻击防护功能；MESH管理无线AP后对WiFi终端进行更细化的二层安全配置</td><td>P0 完整 Suricata 10000+ 规则；Zone-Based 防火墙；RBAC 分级权限；
+P1 TLS/HTTPS加密流量检测、VPN隧道流量检测</td></tr><tr><td>可视化</td><td>P0 可视化防火墙(Zone/应用级+L7)；可视化多种日志（威胁日志、流量日志、管理员日志、系统日志等）审计 +日志留存、导出、脱敏、防篡改、发送（加密 Syslog）</td><td>P0 防火墙/IDS 统一策略编辑器；审计中心(留存+报表+合规导出)；安全仪表盘（系统状态、流量看板、威胁中心、ZTNA仪表盘、VLAN、终端、告警，支持一件处置和多维度下钻）</td></tr><tr><td>VPN</td><td>P0 WireGuard+多 VPN+IPsec+混淆</td><td>P0 同左（保持 VPN 强项）</td></tr><tr><td>易用</td><td>P0 App/Web 双管理；GoodCloud 免 license云；新设备自动隔离+一键 Lockdown；工作模式设置引导；预置场景化安全模板，简化配置；蓝牙初始化配置引导</td><td>P0 同左；P1 ZTNA 零信任（考虑集成开源框架（OpenZiti））</td></tr><tr><td>多模式安全</td><td>P0支持桥模式、旁路由模式下的安全防护/审计</td><td>P0 同左</td></tr><tr><td>多站点</td><td>P1 GoodCloud 多租户轻量 SD-WAN</td><td>P1 MSP 多租户；多站点 SD-WAN</td></tr><tr><td>智能</td><td>无</td><td>P1 AI 行为分析（轻量规则引擎起步，后续迭代流量基线AI异常检测再到ML 模型） + 设备级流量洞察 + 安全策略冗余分析 + 可选云端审计：可建立&quot;智能安全网关&quot;的品类认知</td></tr><tr><td>扩展</td><td>无</td><td>P1 Docker；可选 NVMe 生态</td></tr><tr><td>开放</td><td>P1 上游 OpenWrt 支持承诺；去云化本地日志/Headscale</td><td>P1 同上</td></tr><tr><td>客诉</td><td>AdGuard 与 VPN域名分流/家长控制互斥
+OpenWrt版本更新
+Tailscale等功能的版本更新
+VPN等核心配置的换机迁移</td><td>同上</td></tr></tbody>
+</table></div>
+<h2 id="h2-13" class="lvl2">认证与合规需求</h2>
+<div class="table-wrap"><table>
+<thead><tr><td>类别</td><td>需求项</td><td>备注</td></tr></thead>
+<tbody><tr><td>安规/电磁兼容</td><td>FCC / CE / RoHS /UKCA 基础认证</td><td>出海与国内销售准入门槛</td></tr><tr><td>电气安全</td><td>UL / CE / UKCA 安规（电源与壳体）</td><td>如为金属壳体需接地与温升测试</td></tr><tr><td>网络安全合规</td><td>日志合规导出（参考 PCI-DSS 留痕、等保分级思路）/欧盟 CRA 网络弹性法案</td><td>审计中心需支持合规报表导出
+欧盟首部横向通用联网设备强制网络安全法规</td></tr><tr><td>数据隐私</td><td>本地日志优先、GDPR 友好、可拒开云</td><td>回应拒开云、隐私定位冲突反馈</td></tr><tr><td>性能认证（可选）</td><td>IPS/防火墙吞吐第三方测评（如 ICSA Labs）</td><td>用于对标 Firewalla 全速不降速宣传</td></tr><tr><td>无线相关</td><td>无需 RF 认证（无 Wi-Fi 纯网关）</td><td>降低认证成本与时间</td></tr></tbody>
+</table></div>
+<h2 id="h2-14" class="lvl2">生态能力需求（本地控制器与设备纳管）</h2>
+<p>对应第二点代际跃迁的功能落点，本代以「架构预留 + 控制器内置」为主，不要求生态品类齐全。</p>
+<div class="table-wrap"><table>
+<thead><tr><td>能力项</td><td>Brume 4</td><td>Brume Pro</td><td>标杆参照与说明</td></tr></thead>
+<tbody><tr><td>本地控制器</td><td>内置轻量控制器，可纳管 GL 自有 AP / 交换机 / 路由</td><td>同上，增加多站点与多租户视图</td><td>UniFi Cloud Gateway 全系内置 UniFi OS 控制器；Fusion 2.5G 主张 Gateway &amp; Controller in One</td></tr><tr><td>零接触部署（ZTP）</td><td>支持二维码 / 云绑定批量上线</td><td>同上，增加配置模板批量下发</td><td>Festa 主打 ZTP + SON 自组网；Fusion 支持蓝牙快速部署</td></tr><tr><td>统一账号与统一 App</td><td>一个账号管网关与全部 GL 设备</td><td>同上，增加角色与权限分级</td><td>UniFi 的统一 UI / 统一账号是加购摩擦最低的关键</td></tr><tr><td>本地存储与留存</td><td>可选 USB 外置存储</td><td>预留 M.2 / SATA SSD，用于审计/缓存/Docker/轻量 NVR/轻量NAS/抓包留存与配置备份</td><td>Fusion Pro 以 SSD 槽承载 VMS；本代 GL 优先做日志审计而非录像</td></tr><tr><td>开放 API 与插件框架</td><td>开放REST API标准接口+插件功能适OpenWrt原生软件包</td><td>同上，增加插件签名校验与灰度发布机制</td><td>UniFi 与 TP-Link 生态均封闭，此项为 GL 差异化</td></tr><tr><td>云侧远程与多站点</td><td>远程管理免费，不设授权费</td><td>免费 + 可选 AI 洞察等增值订阅</td><td>UniFi Site Manager 免费；Omada Cloud Essentials免费</td></tr><tr><td>生态解耦红线</td><td>不联网、不注册也能完整使用本机全部安全功能</td><td>同上</td><td>隐私原生是 GL 基因，也是与两个标杆的关键差异</td></tr></tbody>
+</table></div>
+<h2 id="h2-15" class="lvl2">生态搭建可行路径探讨与功能需求</h2>
+<p>GL.iNet 当前仅有网关类硬件，尚无自有 AP 与交换机等设备；存储侧公司已在并行规划家庭 NAS 产品。在此硬件前提下，要以 Brume 为本地核心搭建产品生态，需先明确可行路径，再推导对应的功能开发与硬件缺口。</p>
+<h3 id="h3-1" class="lvl3">可行路径分析</h3>
+<p>综合 GL 的 OpenWrt 基因与行业对标（UniFi / TP-Link Fusion），存在三条可行路径，可并行或分阶段组合：</p>
+<div class="table-wrap"><table>
+<thead><tr><td>路径</td><td>核心做法</td><td>现实可寻址基数</td><td>优势</td><td>局限</td></tr></thead>
+<tbody><tr><td>路径一
+开放控制器 + 第三方 OpenWrt 纳管</td><td>Brume 作本地控制器，可支持管理安装了GL 管理代理包（UCI/ubus over HTTP）的任何已刷标准 OpenWrt 的第三方 AP/交换机</td><td>约60–120款 SMB/SOHO/home 型号（realtek 可网管交换机 40 款 + SMB/SOHO AP 约 85 款；其中已刷机活跃子集约 60 款）；出厂厂商私有固件不在内</td><td>零硬件研发；
+吃 OpenWrt 基因；
+差异化：UniFi /F usion 封闭；
+隐私原生</td><td>可寻址基数=已刷机极客 / homelab / MSP，非主流 SMB 走量；需用户刷机；
+无自有参考设备则生态故事偏虚</td></tr><tr><td>路径二
+自有 + 白牌混合
+（推荐主线）</td><td>阶段1 自有 AP 打样（1-2款吸顶/面板/桌面AP） → 阶段2 交换机 OEM/白牌 → 阶段3 接入公司家庭 NAS</td><td>AP 为 GL 已有 Wi-Fi 研发能力可覆盖；
+交换机 OEM 引入；
+NAS 公司已有</td><td>有guaranteed reference device，统一后台故事真实；
+体验/品牌可控；
+能打主流 SMB</td><td>AP 自研 NRE + 供应链；
+交换机 OEM 品质管控；
+周期较长</td></tr><tr><td>路径三
+渠道捆绑第三方（轻资产补充）</td><td>经 GL 渠道售第三方AP/交换机，Brume 统一后台纳管</td><td>取决于渠道选型</td><td>轻、快、SKU 丰富</td><td>毛利低、体验不可控、粘性弱，仅作补充</td></tr></tbody>
+</table></div>
+<p>建议组合：路径二为主干线（保证生态有真实硬件支撑），路径一作差异化加层（吃 OpenWrt 社区、扩能力），路径三作渠道补充。三者并不互斥，可同期推进。</p>
+<h3 id="h3-2" class="lvl3">对应路径的功能开发、代价与硬件缺口</h3>
+<p>为落地上述路径，需开发的功能、付出的代价与补齐的硬件缺口如下表：</p>
+<div class="table-wrap"><table>
+<thead><tr><td>路径</td><td>需开发功能</td><td>代价 / 周期</td><td>硬件缺口补齐</td></tr></thead>
+<tbody><tr><td>路径一
+开放控制器 + 第三方纳管</td><td>GL 管理代理包（OpenWrt 包：UCI/ubus/rpcd + uhttpd-mod-ubus）；
+能力探测与拓扑发现；
+第三方兼容机型清单与刷机指引；与 GoodCloud 远程纳管集成</td><td>代理包一次性中等；
+持续维护兼容列表；</td><td>无需硬件；
+但缺自有参考设备（故事虚）</td></tr><tr><td>路径二
+自有 + 白牌混合</td><td>自有 AP 固件（AP 模式 + 统一后台 UI）；
+交换机 OEM 适配（GL 固件刷写 + PoE/VLAN 管控/常规二层功能）；
+NAS 统一后台接入（存储虚拟化 / 网络共享 / 备份插件）；
+统一后台与多设备拓扑</td><td>AP 自研 NRE + 供应链（中等）；
+交换机 OEM 选型与品质（中）；
+NAS 接入开发（轻，公司已有）</td><td>AP（新增）；
+交换机（OEM 引入）；
+存储（复用公司并行规划的家庭 NAS）</td></tr><tr><td>路径三
+渠道捆绑第三方</td><td>渠道设备管理模板；
+第三方设备接入向导；
+兼容机型白名单</td><td>低</td><td>无（依赖渠道选品）</td></tr></tbody>
+</table></div>
+<p>功能代价小结：</p>
+<p>纯软件侧（GL 管理代理包、设备能力探测与拓扑发现、第三方兼容机型清单维护、与 GoodCloud 远程纳管集成）是 GL 已有 GoodCloud 技术栈的自然延伸，增量可控。硬件侧真正的净缺口是 AP（自研打样）与交换机（OEM 引入）；存储已由公司家庭 NAS 规划覆盖，Brume 侧仅需做统一后台接入、无需自研存储硬件。建议优先级：先固化 Brume 控制器与插件平台（阶段 0，纯软件）→ 自有 AP 打样（阶段 1）→ 交换机 OEM + NAS 接入（阶段 2/3）。</p>
+</section>
+<section class="section" id="sec-h1-4" data-title="产品核心卖点" hidden>
+<h2 id="h2-16" class="lvl2">Brume 4核心卖点</h2>
+<ul><li>开箱即用的安全底座：IDS/IPS + 原生 VLAN + 可视化 Zone/应用级防火墙 + 日志审计 + MESH WiFi终端的二层精细化管控，无需订阅。</li><li>比 Fusion 更安全、比 hEX 更易用：无 IT 小微企业 $179 级安全基础设施。</li><li>VPN 强项延续：WireGuard 1100+Mbps + 混淆 + Tailscale/ZeroTier 原生，跨境/远程接入无忧。</li><li>超低功耗 &lt;5W、静音、弱电箱神器：7×24 部署无负担。</li><li>免 license GoodCloud 云管理 + App/Web 双管理，多站点轻量运维。</li><li>支持多种部署模式，适应各种网络部署需求。</li><li>高性价比：价格亲民，补齐全竞品安全门槛却不抬高拥有成本。</li></ul>
+<h2 id="h2-17" class="lvl2">Brume Pro 核心卖点</h2>
+<ul><li>Firewalla 一半价格、零订阅的企业级安全中枢：正面取代其范式。</li><li>全开放 Suricata 10000+ 规则 + Zone 防火墙 + 防火墙/IDS 统一策略编排。</li><li>设备级 AI 行为分析 + 流量洞察，新设备自动隔离、一键 Lockdown。</li><li>审计中心：日志留存 + 报表 + 合规导出；多站点 SD-WAN + MSP 多租户。</li><li>ZTNA 零信任 + Docker + 可选 NVMe 本地存储（审计/缓存/轻量 NVR/轻量NAS 潜力）。</li><li>安全仪表盘，全网安全态势统一可视化。</li><li>同样守住 VPN/低功耗/易用护城河，安全深度对标 $629 竞品却仅其半价。</li></ul>
+<h2 id="h2-18" class="lvl2">共同卖点（三代传承的护城河）</h2>
+<ul><li>OpenWrt 开放性 + 无 Wi-Fi 纯网关形态 + 高性价比：从初代到 Pro 一以贯之。</li><li>核心安全零订阅（产品红线）：对抗一切付费签名 / license 云范式的根本差异点。</li><li>开箱易用 + 可视化：把企业级安全做成消费级体验，是竞争中最稀缺的组合。</li></ul>
+<h2 id="h2-19" class="lvl2">生态卖点（以 Brume 为本地核心）</h2>
+<p>GL 生态采用「双层生态」打法——Brume 内置控制器为本地核心，自有硬件（AP/交换机/NAS）为主干一体管控，开源 OpenWrt 纳管为差异化加层；本代先交付控制器与插件平台（阶段 0），AP/交换机/NAS 按阶段补齐。</p>
+<ul><li><strong>一台顶三台，控制器内置</strong>：网关+控制器+安全中枢三合一，加购 GL 设备无需另买控制器（对标 UniFi Cloud Gateway 内置 UniFi OS、Fusion Gateway &amp; Controller in One）。Brume 4 内置轻量控制器，Pro 预留 M.2/SSD 承载日志审计与本地留存。</li><li><strong>零授权费，且离线可用</strong>：核心安全与本地管理永久免费，云侧远程与多站点管理不收授权费（对标 UniFi/Omada 免授权、正面打 Firewalla/Meraki 订阅软肋）；且不联网、不注册也能完整使用本机全部安全功能（隐私原生红线）。</li><li><strong>唯一开源可扩展的双层生态中枢</strong>：OpenWrt 底座 + 开放 API + 插件框架；在自有硬件主干之外，可纳管<strong>已刷标准 OpenWrt 的第三方 AP/交换机（实测约 125 款 SMB/SOHO 型号）</strong>，UniFi 与 TP-Link 生态均封闭且不可纳管第三方。</li><li><strong>VPN / </strong><strong>跨境</strong><strong> / </strong><strong>隐私原生</strong>：家庭、出行、公司共用一套 VPN 拓扑，两个标杆的生态都以局域网集中管理为中心，缺这一维度。</li><li><strong>路线清晰、低门槛入</strong>：Brume 4 以 $179-199 起步即可组网，对比 UniFi 网关入门约 $199.00（UCG-Max, $214.00 Surcharge incl.），生态随 GL 自有 AP 打样、<strong>家庭</strong><strong> NAS</strong><strong>（公司已在规划）统一后台接入</strong>、交换机 OEM 分阶段闭环，用低门槛换装机量再做生态复购。</li></ul>
+</section>
+    </div>
+  </main>
+</div>
+<script>
+const t=document.getElementById('toggle');
+function setTheme(d){document.body.classList.toggle('dark',d==='dark');localStorage.setItem('sg-theme',d);}
+setTheme(localStorage.getItem('sg-theme')||'light');
+t.onclick=()=>setTheme(document.body.classList.contains('dark')?'light':'dark');
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function setCrumb(root,cur){
+  const c=document.getElementById('crumb');
+  if(cur) c.innerHTML='<span class="root">'+esc(root)+'</span><span class="sep">›</span><span class="cur">'+esc(cur)+'</span>';
+  else c.innerHTML='<span class="root">'+esc(root)+'</span>';
+}
+
+const sections=[...document.querySelectorAll('.section')];
+const tabs=[...document.querySelectorAll('.tab')];
+const tocBody=document.getElementById('toc-body');
+let spy=null, currentIdx=0;
+
+function buildToc(sec){
+  const heads=[...sec.querySelectorAll('h2[id],h3[id]')];
+  tocBody.innerHTML='';
+  if(!heads.length){
+    tocBody.innerHTML='<p style="color:var(--sub);font-size:12px;padding:6px 10px">本章无子节</p>';
+    return;
+  }
+  const ul=document.createElement('ul');ul.className='toc-list';
+  const linkMap=new Map();
+  heads.forEach(h=>{
+    const li=document.createElement('li');
+    li.className='toc-l'+h.tagName[1];
+    const a=document.createElement('a');
+    a.href='#'+h.id;a.textContent=h.textContent;
+    a.onclick=ev=>{ev.preventDefault();
+      const tg=document.getElementById(h.id);
+      tg&&tg.scrollIntoView({behavior:'smooth',block:'start'});
+      setCrumb(sections[currentIdx].dataset.title, h.textContent);};
+    li.appendChild(a);ul.appendChild(li);linkMap.set(h.id,a);
+  });
+  tocBody.appendChild(ul);
+  if(spy)spy.disconnect();
+  spy=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+    linkMap.forEach(a=>a.classList.remove('active'));
+    const a=linkMap.get(e.target.id);a&&a.classList.add('active');
+    setCrumb(sections[currentIdx].dataset.title, e.target.textContent);
+  }});},{rootMargin:'-12% 0px -80% 0px',threshold:0});
+  heads.forEach(h=>spy.observe(h));
+}
+
+function show(idx){
+  currentIdx=idx;
+  sections.forEach((s,i)=>{s.hidden=i!==idx;});
+  tabs.forEach((tb,i)=>tb.classList.toggle('active',i===idx));
+  buildToc(sections[idx]);
+  setCrumb(sections[idx].dataset.title, '');
+  window.scrollTo({top:0,behavior:'instant'});
+  try{location.hash='sec-'+sections[idx].id.replace('sec-','');}catch(e){}
+}
+tabs.forEach((tb,i)=>tb.onclick=()=>show(i));
+
+const mb=document.getElementById('menu'),sb=document.getElementById('sidebar');
+mb&&(mb.onclick=()=>sb.classList.toggle('open'));
+
+show(0);
+</script>
+</body>
+</html>
